@@ -1,0 +1,55 @@
+{
+  "name": "coffe",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "core-js": "^3.6.5",
+    "pug": "^3.0.0",
+    "pug-plain-loader": "^1.0.0",
+    "sass-loader": "^9.0.3",
+    "vue": "^2.6.11",
+    "vue-router": "^3.2.0"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.30",
+    "@fortawesome/free-brands-svg-icons": "^5.14.0",
+    "@fortawesome/free-solid-svg-icons": "^5.14.0",
+    "@fortawesome/vue-fontawesome": "^0.1.10",
+    "@vue/cli-plugin-babel": "~4.4.0",
+    "@vue/cli-plugin-eslint": "~4.4.0",
+    "@vue/cli-plugin-router": "^4.5.3",
+    "@vue/cli-service": "~4.4.0",
+    "babel-eslint": "^10.1.0",
+    "dotenv": "^8.2.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "sass": "^1.26.10",
+    "vue-router": "^3.4.3",
+    "vue-template-compiler": "^2.6.11",
+    "vue2-google-maps": "^0.10.7"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
