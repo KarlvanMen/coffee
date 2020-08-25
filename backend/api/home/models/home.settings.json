@@ -1,0 +1,48 @@
+{
+  "kind": "singleType",
+  "collectionName": "homes",
+  "info": {
+    "name": "Home"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "Navigation": {
+      "type": "component",
+      "repeatable": false,
+      "component": "custom.top-menu"
+    },
+    "Background": {
+      "type": "component",
+      "repeatable": false,
+      "component": "custom.full-background"
+    },
+    "Categories": {
+      "type": "component",
+      "repeatable": false,
+      "component": "custom.categories"
+    },
+    "Products": {
+      "type": "component",
+      "repeatable": true,
+      "component": "custom.img-with-text"
+    },
+    "ContactUs": {
+      "type": "component",
+      "repeatable": false,
+      "component": "custom.contact-form"
+    },
+    "AboutUs": {
+      "type": "component",
+      "repeatable": false,
+      "component": "custom.about"
+    },
+    "Disclaimer": {
+      "type": "component",
+      "repeatable": false,
+      "component": "custom.copyright"
+    }
+  }
+}

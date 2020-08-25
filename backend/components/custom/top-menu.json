@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_top_menu_top_menus",
+  "info": {
+    "name": "Top menu",
+    "icon": "align-justify"
+  },
+  "options": {},
+  "attributes": {
+    "LeftMenu_EN": {
+      "type": "json"
+    },
+    "LeftMenu_IT": {
+      "type": "json"
+    },
+    "Logo": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false
+    },
+    "Languages": {
+      "type": "json"
+    }
+  }
+}

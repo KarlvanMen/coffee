@@ -1,0 +1,49 @@
+{
+  "collectionName": "components_custom_abouts",
+  "info": {
+    "name": "About",
+    "icon": "address-card"
+  },
+  "options": {},
+  "attributes": {
+    "Company": {
+      "type": "string"
+    },
+    "CompanyStatus": {
+      "type": "string"
+    },
+    "Email_EN": {
+      "type": "string"
+    },
+    "Email_IT": {
+      "type": "string"
+    },
+    "Email": {
+      "type": "email"
+    },
+    "Phone_EN": {
+      "type": "string"
+    },
+    "Phone_IT": {
+      "type": "string"
+    },
+    "Phone": {
+      "type": "string"
+    },
+    "Street": {
+      "type": "text"
+    },
+    "City": {
+      "type": "text"
+    },
+    "FBurl": {
+      "type": "string"
+    },
+    "IGurl": {
+      "type": "string"
+    },
+    "TWurl": {
+      "type": "string"
+    }
+  }
+}

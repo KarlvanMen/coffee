@@ -1,0 +1,43 @@
+{
+  "collectionName": "components_custom_contact_forms",
+  "info": {
+    "name": "Contact form",
+    "icon": "envelope-open-text"
+  },
+  "options": {},
+  "attributes": {
+    "Title_EN": {
+      "type": "string"
+    },
+    "Title_IT": {
+      "type": "string"
+    },
+    "Name_EN": {
+      "type": "string"
+    },
+    "Name_IT": {
+      "type": "string"
+    },
+    "Email_EN": {
+      "type": "string"
+    },
+    "Email_IT": {
+      "type": "string"
+    },
+    "Message_EN": {
+      "type": "string"
+    },
+    "Message_IT": {
+      "type": "string"
+    },
+    "Send_EN": {
+      "type": "string"
+    },
+    "Send_IT": {
+      "type": "string"
+    },
+    "SendTo": {
+      "type": "email"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "categories",
+  "info": {
+    "name": "Category"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true
+  },
+  "attributes": {
+    "products": {
+      "collection": "product",
+      "via": "categories",
+      "dominant": true
+    },
+    "Title_EN": {
+      "type": "string"
+    },
+    "Title_IT": {
+      "type": "string"
+    },
+    "URL": {
+      "type": "string"
+    }
+  }
+}
