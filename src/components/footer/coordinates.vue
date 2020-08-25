@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
     name: "Coordinates",
@@ -33,6 +34,28 @@ export default {
                 {icon: ['fab', 'instagram'], url: '#'},
             ]
         }
+    },
+    methods:{
+        getText() {
+            axios.get('http://localhost:1337/page-bottom')
+                .then(response => {
+                    const resp = response.data;
+                    if (resp.About) {
+                        const about = resp.About[0]
+                        this.company = [about.TitleEN, about.CompanyStatus]
+                        this.contact = [`${about.EmailEN}: <a href="#">${about.Email}</a>`, `${about.PhoneEN}: ${about.Phone}`]
+                        this.address = [about.Street, about.City]
+                        this.social = [
+                            {icon: ['fab', 'facebook-f'], url: about.Facebook},
+                            {icon: ['fab', 'twitter'], url: about.Twitter},
+                            {icon: ['fab', 'instagram'], url: about.Instagram}
+                        ]
+                    }
+                })
+        }
+    },
+    mounted(){
+        this.getText()
     }
 }
 </script>

@@ -1,70 +1,67 @@
 <template lang="pug">
   .content
     .head
-      h1.title {{ $route.params.product }}
+      h1.title {{ title }}
       .description {{shortDesc}}
     .products
       .product(v-for="product in products")
-        .desc-img(v-bind:style="{ backgroundImage: `url(${getImgUrl(product.img)})` }")
+        .desc-img(v-bind:style="{ backgroundImage: `url(${product.img})` }")
         .description
           h3.title {{product.title}}
           .shortDesc {{product.shortDesc}}
         .additional
           h3.title {{product.title}}
           .description(v-html="product.description")
+      .product.empty
+      .product.empty
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: "Product",
   data(){
     return {
       title: '',
-      shortDesc: "Short description of the site",
+      shortDesc: "",
       products: [
-        {
-          title: "Product 1",
-          img: 'img/categories/coffe.jpeg',
-          shortDesc: "Short description",
-          description: `<p>Roasting:	Medium</p>
-            <p>Aroma:	Sweet and fruity</p>
-            <p>Body:	Delicate body with elastic cream</p>
-            <p>Taste:	Hints of vanilla, almonds and hazelnuts</p>`
-        },
-        {
-          title: "Product 2",
-          img: 'img/categories/coffe_2.jpeg',
-          shortDesc: "Short description",
-          description: `<p>Roasting:	Medium</p>
-            <p>Aroma:	Sweet and fruity</p>
-            <p>Body:	Delicate body with elastic cream</p>
-            <p>Taste:	Hints of vanilla, almonds and hazelnuts</p>`
-        },
-        {
-          title: "Product 3",
-          img: 'img/categories/coffe.jpeg',
-          shortDesc: "Short description",
-          description: `<p>Roasting:	Medium</p>
-            <p>Aroma:	Sweet and fruity</p>
-            <p>Body:	Delicate body with elastic cream</p>
-            <p>Taste:	Hints of vanilla, almonds and hazelnuts</p>`
-        },
-        {
-          title: "Product 4",
-          img: 'img/categories/coffe_2.jpeg',
-          shortDesc: "Short description",
-          description: `<p>Roasting:	Medium</p>
-            <p>Aroma:	Sweet and fruity</p>
-            <p>Body:	Delicate body with elastic cream</p>
-            <p>Taste:	Hints of vanilla, almonds and hazelnuts</p>`
-        },
       ]
     }
   },
   methods: {
-      getImgUrl(img) {
-          return require('@/assets/'+img)
-      }
+    getImgUrl(img) {
+      return require('@/assets/'+img)
+    },
+    getProducts() {
+      axios.get('http://localhost:1337/categories')
+        .then(response => {
+            const resp = response.data;
+            if (resp.length) {
+              for (let i = 0; i < resp.length; i++) {
+                const category = resp[i];
+                if (category.url == this.$route.params.product) {
+                  i = resp.length
+                  this.title = category.Title_EN
+                  this.shortDesc = category.Description_EN
+                  this.products = []
+                  for (let j = 0; j < category.products.length; j++) {
+                    const product = category.products[j];
+                    this.products.push({
+                      title: product.Title_EN,
+                      img: `http://localhost:1337${product.Image.url}`,
+                      shortDesc: product.ShortDescription_EN,
+                      description:  product.Description_EN.replace(/\r?\n/g, "<br />")
+                    })
+                  }
+                }
+              }
+            }
+        })
+    }
+  },
+  mounted(){
+    this.getProducts()
   }
 }
 </script>
@@ -101,6 +98,9 @@ export default {
         top: auto;
         bottom: 0;
       }
+    }
+    &.empty {
+      pointer-events: none;
     }
     .desc-img {
       height: 0;

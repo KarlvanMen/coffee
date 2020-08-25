@@ -1,27 +1,49 @@
 <template lang="pug">
     .container
-        router-link.logo(to="/")
+        router-link.logo(to="/" v-bind:style="{ backgroundImage: `url(${logo})` }")
         .lang
             a(v-for="language in lang" href="#") {{language.title}}
 </template>
 
 <script>
-let data = 
-{
-    lang: [
-        {
-            title: "IT",
-            url: "/it"
-        },
-        { 
-            title: "EN",
-            url: "/en"
-        }]
-}
+import axios from 'axios'
+
 export default {
     name: 'Header',
     data: () => {
-        return data
+        return {
+            lang: [
+                {
+                    title: "IT",
+                    lang: "it"
+                },
+                { 
+                    title: "EN",
+                    lang: "en"
+                }
+            ],
+            logo: 'logo.png'
+        }
+    },
+    methods: {
+        getHeader() {
+            axios.get('http://localhost:1337/page-top')
+                .then(response => {
+                    const resp = response.data;
+                    if (resp.Head) {
+                        this.lang = resp.Head[0].Language
+                        this.logo = `http://localhost:1337${resp.Head[0].Logo.url}`
+                    }
+                })
+        },
+        getImgUrl(img) {
+            return require(img)
+        }
+    },
+    mounted(){
+        this.logo = '../../assets/'+this.logo
+        this.getHeader()
+
     }
 }
 </script>
@@ -36,7 +58,6 @@ export default {
     margin-left: 50%;
     color: #fff;
     .logo{
-        background-image: url('~@/assets/logo.png');
         background-size: contain;
         background-repeat: no-repeat;
         width: 150px;

@@ -1,8 +1,8 @@
 <template lang="pug">
   #app
-    Header(ref="header")
+    Header(ref="header" v-if="showHeadAndFoot")
     router-view
-    Footer
+    Footer(v-if="showHeadAndFoot")
 </template>
 
 <script>
@@ -11,9 +11,30 @@ import Footer from "@/components/footer"
 
 export default {
   name: 'App',
+  data: ()=>{
+    return {
+      showHeadAndFoot: true
+    }
+  },
   components: {
     Header,
     Footer
+  },
+  mounted(){
+    this.checkPath()
+  },
+  updated(){
+    this.checkPath()
+  },
+  methods: {
+    checkPath(){
+      const routeName = this.$route.name
+      if (routeName == 'Login' || routeName == 'Admin' || routeName == 'Edit Product') {
+        this.showHeadAndFoot = false
+      } else {
+        this.showHeadAndFoot = true
+      }
+    }
   }
 
 }

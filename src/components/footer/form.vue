@@ -1,26 +1,38 @@
 <template lang="pug">
     .form.shifted-border
         .title
-            h2 Contact us
+            h2 {{title}}
         form(@submit.prevent="onsubmit")
             .left
                 .half.floating-label
                     input(type="text" id="name_input" placeholder=" ")
-                    label.title(for="name_input") Name:
+                    label.title(for="name_input") {{name}}
                 .half.floating-label
                     input(type="email" id="email_input" placeholder=" ")
-                    label.title(for="email_input") E-mail:
+                    label.title(for="email_input") {{email}}
                 .full.floating-label
                     textarea(id="message_input" max-length="800" placeholder=" " v-on:keyup="changeHeight($event)")
-                    label.title(for="message_input") Message:
+                    label.title(for="message_input") {{msg}}
             .right
                 .full
-                    button.submit.title.shifted-border(type="submit") send
+                    button.submit.title.shifted-border(type="submit") {{send}}
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
     name: "Form",
+    data: () => {
+        return {
+            title: 'Contact us',
+            name: 'Name:',
+            email: 'E-mail:',
+            msg: 'Message:',
+            send: 'send',
+            sendTo: 's@a.s'
+        }
+    },
     methods: {
         changeHeight: (event) => {
             let target = event.target
@@ -33,7 +45,24 @@ export default {
         },
         onsubmit: () => {
 
+        },
+        getText() {
+            axios.get('http://localhost:1337/page-bottom')
+                .then(response => {
+                    const resp = response.data;
+                    if (resp.Contact) {
+                        this.title = resp.Contact[0].TitleEN
+                        this.name = resp.Contact[0].NameEN + ":"
+                        this.email = resp.Contact[0].EmailEN + ":"
+                        this.msg = resp.Contact[0].MessageEN + ":"
+                        this.send = resp.Contact[0].SendEN
+                        this.sendTo = resp.Contact[0].EmailTo
+                    }
+                })
         }
+    },
+    mounted() {
+        this.getText()
     }
 }
 </script>

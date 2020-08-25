@@ -2,43 +2,41 @@
     .content
         section.products
             router-link.product.border(v-for="product in products" :to="product.link")
-                .product-img(v-bind:style="{ backgroundImage: `url(${getImgUrl(product.img)})` }")
+                .product-img(v-bind:style="{ backgroundImage: `url(${product.img})` }")
                 h3.title {{product.title}}
 </template>
 <script>
+import axios from 'axios'
+
 export default {
     name: "Sections",
     data(){
         return{
             products: [
-                {
-                    title: "Coffee beans",
-                    img: "img/categories/coffe.jpeg",
-                    link: "/products/beans"
-                },
-                {
-                    title: "Ground Coffe",
-                    img: "img/categories/coffe_2.jpeg",
-                    link: "/products/coffe"
-                },
-                {
-                    title: "Marketing",
-                    img: "img/categories/coffe.jpeg",
-                    link: "/products/marketing"
-                },
-                {
-                    title: "Related products",
-                    img: "img/categories/coffe_2.jpeg",
-                    link: "/products/related"
-                }
             ]
         }
     },
     mounted(){
+        this.getSections()
     },
     methods: {
-        getImgUrl(img) {
-            return require('../../assets/'+img)
+        getSections() {
+            axios.get('http://localhost:1337/homepage')
+                .then(response => {
+                    const resp = response.data;
+                    if (resp.Categories){
+                        const categories = resp.Categories.categories
+                        this.products = []
+                        for (let i = 0; i < categories.length; i++) {
+                            const cat = categories[i];
+                            this.products.push({
+                                title: cat.Title_EN,
+                                img: `http://localhost:1337${cat.Image.url}`,
+                                link: `/products/${cat.url}`
+                            })
+                        }
+                    }
+                })
         }
     }
 }

@@ -1,47 +1,58 @@
 <template lang="pug">
-    .video_background
-        video(:autoplay="true" loop muted poster="poster")
-            source(v-for="source in sources" :src="source.src" :media="source.media")
+    .background
+        video(v-if="media=='video' && src.length" :autoplay="true" loop muted poster="poster")
+            source(:src="src")
+        .static(v-else-if="media=='pic'")
+        .static(v-else-if="media=='color'")
+        .overlay(v-if="media=='video'")
 </template>
 
 <script>
-let data = 
-{
-    sources: [
-        {
-            src: require("../../assets/video/coffee_xsmall.mp4"),
-            media: "screen and (max-device-width:640px)"
-        },
-        {
-            src: require("../../assets/video/coffee_small.mp4"),
-            media: "screen and (max-device-width:960px)"
-        },
-        {
-            src: require("../../assets/video/coffee_medium.mp4"),
-            media: "screen and (max-device-width:1280px)"
-        },
-        {
-            src: require("../../assets/video/coffee_large.mp4"),
-            media: "screen and (min-device-width:1281px)"
-        }
-    ],
-    poster: "~@/assets/video/poster.jpg"
-}
+import axios from 'axios'
+
 export default {
     name: 'VideoBg',
     data: () => {
-        return data
+        return {
+            media: 'video',
+            src: '',
+            poster: "~@/assets/video/poster.jpg"
+        }
     },
     mounted(){
         this.$nextTick(function() {
             this.setDimensions()
             window.addEventListener('resize', this.setDimensions)
+            this.getVideo()
 		})
     },
     methods: {
         setDimensions () {
             this.$el.style.height = `${window.innerHeight}px`
             this.$el.style.marginTop = `-${this.$parent.$parent.$refs.header.$el.getBoundingClientRect().height}px`
+        },
+        getVideo() {
+            axios.get('http://localhost:1337/homepage')
+                .then(response => {
+                    const resp = response.data;
+                    if (resp.Cover){
+                        const bckgr = resp.Cover.VideoOrImage
+                        switch (bckgr.mime.split('/')[0]) {
+                            case 'video':
+                                this.media = 'video'
+                                this.src = `http://localhost:1337${bckgr.url}`                                
+                                break;
+                            case 'image':
+                                this.media = 'pic'
+                                this.src = `http://localhost:1337${bckgr.url}`                                
+                                break;                        
+                            default:
+                                this.media = 'color'
+                                this.src = `#000000`  
+                                break;
+                        }
+                    }
+                })
         }
     }
 }
@@ -50,7 +61,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/scss/common.scss';
 
-.video_background{
+.background{
     min-width: 100%;
     max-width:100%;
     z-index: -1;
@@ -73,14 +84,22 @@ export default {
             height: 100%;
         }
     }
-    &::after {
-        content: '';
+    .overlay {
         position: absolute;
         top: 0;
         right: 0;
         bottom: 0;
         left: 0;
         background-color: rgba(0,0,0,0.35);
+    }
+    .static{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-size: contain;
+        background-repeat: no-repeat;
     }
 }
 </style>
