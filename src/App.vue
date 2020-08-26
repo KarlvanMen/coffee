@@ -6,61 +6,94 @@
 </template>
 
 <script>
-import Header from '@/components/header'
-import Footer from "@/components/footer"
+import axios from "axios";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import { mapMutations, mapGetters } from "vuex";
 
 export default {
-  name: 'App',
-  data: ()=>{
+  name: "App",
+  data: () => {
     return {
-      showHeadAndFoot: true
-    }
+      showHeadAndFoot: true,
+    };
   },
   components: {
     Header,
-    Footer
+    Footer,
   },
-  mounted(){
-    this.checkPath()
+  mounted() {
+    this.checkPath();
+    this.getData();
   },
-  updated(){
-    this.checkPath()
+  computed: {
+    ...mapGetters(["getBaseUrl"]),
+  },
+  updated() {
+    this.checkPath();
   },
   methods: {
-    checkPath(){
-      const routeName = this.$route.name
-      if (routeName == 'Login' || routeName == 'Admin' || routeName == 'Edit Product') {
-        this.showHeadAndFoot = false
+    ...mapMutations(["setData", "setCategories"]),
+    getData() {
+      this.getHomeData();
+      this.getCategories();
+    },
+    getHomeData() {
+      axios.get(`${this.getBaseUrl}/home`).then((response) => {
+        const resp = response.data;
+        if (resp != null) {
+          this.setData(resp);
+        }
+      });
+    },
+    getCategories() {
+      axios.get(`${this.getBaseUrl}/categories`).then((response) => {
+        const resp = response.data;
+        if (resp != null) {
+          this.setCategories(resp);
+        }
+      });
+    },
+    checkPath() {
+      const routeName = this.$route.name;
+      if (
+        routeName == "Login" ||
+        routeName == "Admin" ||
+        routeName == "Edit Product" ||
+        routeName == "Edit Category" ||
+        routeName == "Edit Page"
+      ) {
+        this.showHeadAndFoot = false;
       } else {
-        this.showHeadAndFoot = true
+        this.showHeadAndFoot = true;
       }
-    }
-  }
-
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   font-size: 16px;
 }
-*{
+* {
   box-sizing: border-box;
-  transition: all .3s;
+  transition: all 0.3s;
 }
-a{
+a {
   color: inherit;
 }
-#app{
+#app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
 }
-.title{
-  text-transform: uppercase
+.title {
+  text-transform: uppercase;
 }
 </style>

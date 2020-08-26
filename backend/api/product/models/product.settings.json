@@ -18,7 +18,7 @@
       "unique": false,
       "required": true
     },
-    "ShortDescriptionEN": {
+    "ShortDescription_EN": {
       "type": "text"
     },
     "ShortDescription_IT": {
@@ -42,8 +42,8 @@
       "required": false
     },
     "categories": {
-      "via": "products",
-      "collection": "category"
+      "collection": "category",
+      "via": "products"
     }
   }
 }

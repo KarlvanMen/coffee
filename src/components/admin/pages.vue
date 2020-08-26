@@ -1,42 +1,34 @@
 <template lang="pug">
   main.main
-    h2.accordion(v-on:click="toggleAccordion()") Products
-    .products.panel
+    h2.accordion(v-on:click="toggleAccordion()") Pages
+    .pages.panel
         .add-new.content
             .icon-container.plus
                 font-awesome-icon.icon(:icon="['fas', 'plus-circle']")
-        router-link.content(v-for="product in products" :to="`/admin/edit/product/${product.id}`")
+        router-link.content(v-for="page in pages" :to="`/admin/edit/page/${page.id}`")
             .icon-container.edit
                 font-awesome-icon.icon(:icon="['fas', 'edit']")
-            h4 {{product.Title_EN}}
-            img(:src="getBaseUrl + product.Image.url")
+            h4 {{page.title}}
 </template>
-
 <script>
 import { mapGetters } from "vuex";
 export default {
-  name: "Products",
+  name: "Pages",
   data() {
     return {
-      products: [],
+      pages: [
+        {
+          title: "Home",
+          id: "home",
+        },
+      ],
     };
   },
   computed: {
-    ...mapGetters(["getBaseUrl", "getProducts", "getLoaded"]),
+    ...mapGetters(["getBaseUrl"]),
   },
-  mounted() {
-    this.drawProducts();
-  },
+  mounted() {},
   methods: {
-    drawProducts() {
-      if (this.getLoaded("products")) {
-        this.products = this.getProducts;
-      } else {
-        setTimeout(() => {
-          this.drawProducts();
-        }, 100);
-      }
-    },
     toggleAccordion() {
       this.$el.querySelector(".accordion").classList.toggle("active");
 

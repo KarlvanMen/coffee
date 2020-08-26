@@ -4,32 +4,36 @@
         p.text {{text}}
 </template>
 <script>
-import axios from 'axios'
-
+import { mapGetters } from "vuex";
 export default {
-    data: () => {
-        return {
-            copyrights: 'COPYRIGHT 2020 © ALL RIGHTS RESERVED',
-            text: 'Created by me'
+  data: () => {
+    return {
+      copyrights: "",
+      text: "",
+    };
+  },
+  computed: {
+    ...mapGetters(["getDataLoaded", "getCopyright"]),
+  },
+  methods: {
+    getText() {
+      if (this.getDataLoaded) {
+        let text = this.getCopyright;
+        if (text) {
+          this.copyrights = text.Copyright_EN;
+          this.text = text.Other_EN;
         }
+      } else {
+        setTimeout(() => {
+          this.getText();
+        }, 100);
+      }
     },
-    methods: {
-        getText() {
-            axios.get('http://localhost:1337/page-bottom')
-                .then(response => {
-                    const resp = response.data;
-                    if (resp.Footer) {
-                        const foot = resp.Footer[0]
-                        this.copyrights = foot.Copyright
-                        this.text = foot.Other
-                    }
-                })
-        }
-    },
-    mounted(){
-        this.getText()
-    }
-}
+  },
+  mounted() {
+    this.getText();
+  },
+};
 </script>
 <style lang="sass" scoped>
 .bottom

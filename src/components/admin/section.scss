@@ -1,0 +1,57 @@
+@import "../../scss/common.scss";
+.main {
+  max-width: $max-content-width;
+  margin: 0 auto;
+  .panel {
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    .content {
+      width: 24%;
+      padding: 1em 0.5em;
+      position: relative;
+      &:not(:first-child) {
+        margin-left: 1%;
+      }
+      &:nth-child(5) {
+        margin-left: 0;
+      }
+      img {
+        max-width: 50%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+      }
+      &:hover {
+        box-shadow: 0 0 29px 0 rgba(0, 0, 0, 0.18);
+        .icon-container {
+          opacity: 1;
+          &:not(.plus) {
+            background-color: rgba(0, 0, 0, 0.08);
+          }
+        }
+      }
+      .icon-container {
+        opacity: 0;
+        color: $coffee-brown;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        .icon {
+          font-size: 3em;
+        }
+        &.plus {
+          color: $prim;
+          opacity: 1;
+        }
+      }
+    }
+  }
+}

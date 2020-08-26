@@ -1,44 +1,35 @@
 <template lang="pug">
-    main.product
+    main.category
         h1 Admin
         h2 Edit 
-            u {{new_product.Title_EN}}
+            u {{new_category.Title_EN}}
         .edit
             .section.child-2
                 .child.half
                     h4.lang Title (EN)
-                    input(v-model="new_product.Title_EN")
+                    input(v-model="new_category.Title_EN")
                 .child.half
                     h4.lang Title (IT)
-                    input(v-model="new_product.Title_IT")
+                    input(v-model="new_category.Title_IT")
             .section.child-2
                 .child.half
                     h4.lang Short description (EN)
-                    textarea.short(v-model="new_product.ShortDescription_EN")
+                    textarea.short(v-model="new_category.ShortDescription_EN")
                 .child.half
                     h4.lang Short description (IT)
-                    textarea.short(v-model="new_product.ShortDescription_IT")
-            .section
-                .child
-                    h4.lang Description (EN)
-                    textarea.long(v-model="new_product.Description_EN")
-                .child
-                    h4.lang Description (IT)
-                    textarea.long(v-model="new_product.Description_IT")
+                    textarea.short(v-model="new_category.ShortDescription_IT")
             .section.child-2
                 .child.half
                     h4.title Image
-                    img.prodImg(:src="getUrl(new_product.Image.url)")
+                    img.prodImg(v-if="new_category.Image" :src="getUrl(new_category.Image.url)")
                     form.upload-img-form
                         font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput()")
                         font-awesome-icon.upload-icon(:icon="['fas', 'folder-open']" @click="browseImages()")
                         input.upload-img(type="file" name="files" accept="image/jpeg" @change="updateImage($event)")
                 .child.half
-                    h4.title Categories
-                    .categories
-                        .category(v-for="cat in new_product.categories")
-                            p {{cat.Title_EN}}
-        button.submit(v-on:click="postProduct()") Save
+                    h4.title URL
+                    input(v-model="new_category.URL" @change="validateURL()")
+        button.submit(v-on:click="postCategory()") Save
         .modal(v-if="showModal")
           .inner
             .close(@click="showModal = false") X
@@ -48,22 +39,21 @@
                 .title {{media.name}}
             .finish(@click="selectMedia()") OK
 </template>
+
 <script>
-import axios from "axios";
 import { mapGetters, mapMutations } from "vuex";
+import axios from "axios";
 export default {
-  data() {
+  data: () => {
     return {
-      product: {},
-      new_product: {
-        Description_EN: "",
-        Description_IT: "",
-        Image: {},
-        ShortDescription_EN: "",
-        ShortDescription_IT: "",
+      category: {},
+      new_category: {
         Title_EN: "",
         Title_IT: "",
-        categories: [],
+        ShortDescription_EN: "",
+        ShortDescription_IT: "",
+        Image: {},
+        URL: "",
       },
       uploadImg: false,
       modal: {},
@@ -71,63 +61,66 @@ export default {
       selectedMedia: -1,
     };
   },
-  mounted() {
-    this.checkLogIn();
-    this.drawProduct();
-  },
   computed: {
     ...mapGetters([
-      "getJwt",
-      "isJwtSet",
-      "getBaseUrl",
-      "getProduct",
-      "getLoading",
+      "getCategory",
       "getLoaded",
+      "getLoading",
+      "getBaseUrl",
+      "isJwtSet",
+      "getJwt",
     ]),
   },
+  mounted() {
+    this.checkLogIn();
+    this.drawCategory();
+  },
   methods: {
-    ...mapMutations(["setProducts", "setLoading", "setNotLoaded"]),
-    drawProduct() {
-      if (this.getLoaded("products")) {
-        const prod = this.getProduct(this.$route.params.product);
-        if (prod) {
-          this.product = prod;
-          this.new_product.Description_EN = this.product.LongDescription_EN;
-          this.new_product.Description_IT = this.product.LongDescription_IT;
-          this.new_product.Image = this.product.Image;
-          this.new_product.ShortDescription_EN = this.product.ShortDescription_EN;
-          this.new_product.ShortDescription_IT = this.product.ShortDescription_IT;
-          this.new_product.Title_EN = this.product.Title_EN;
-          this.new_product.Title_IT = this.product.Title_IT;
-          this.new_product.categories = this.product.categories;
-        } else {
-          console.log(prod);
-        }
+    ...mapMutations(["setCategories", "setNotLoaded"]),
+    drawCategory() {
+      if (this.getLoaded("categories")) {
+        const temp = this.getCategory(this.$route.params.category);
+        this.category = temp;
+        this.new_category.Title_EN = temp.Title_EN;
+        this.new_category.Title_IT = temp.Title_IT;
+        this.new_category.ShortDescription_EN = temp.ShortDescription_EN;
+        this.new_category.ShortDescription_IT = temp.ShortDescription_IT;
+        this.new_category.Image = temp.Image;
+        this.new_category.URL = temp.URL;
       } else {
-        if (!this.getLoading("products")) {
-          this.loadProducts();
+        if (!this.getLoading("categories")) {
+          this.loadCategories();
         }
         setTimeout(() => {
-          this.drawProduct();
+          this.drawCategory();
         }, 100);
       }
+    },
+    loadCategories() {
+      axios.get(`${this.getBaseUrl}/categories`).then((response) => {
+        const resp = response.data;
+        if (resp != null) {
+          this.setCategories(resp);
+        }
+      });
     },
     getUrl(url) {
       return this.uploadImg ? url : this.getBaseUrl + url;
     },
     updateImage(e) {
+      console.log(e);
       const image = e.target.files[0];
       const reader = new FileReader();
       reader.readAsDataURL(image);
       reader.onload = (e) => {
         this.uploadImg = true;
-        this.new_product.Image.url = e.target.result;
+        this.new_category.Image.url = e.target.result;
       };
     },
-    postProduct() {
+    postCategory() {
       axios
         .put(
-          `${this.getBaseUrl}/products/${this.$route.params.product}`,
+          `${this.getBaseUrl}/categories/${this.$route.params.category}`,
           this.checkForChanges(),
           {
             headers: { Authorization: `Bearer ${this.getJwt}` },
@@ -139,8 +132,8 @@ export default {
               const formElement = document.querySelector("form");
               let formData = new FormData(formElement);
 
-              formData.append("ref", "product");
-              formData.append("refId", this.$route.params.product);
+              formData.append("ref", "category");
+              formData.append("refId", this.$route.params.category);
               formData.append("field", "Image");
 
               axios
@@ -163,29 +156,24 @@ export default {
     },
     checkForChanges() {
       let changes = {};
-      if (this.product.LongDescription_EN !== this.new_product.Description_EN)
-        changes.Description_EN = this.new_product.Description_EN;
-      if (this.product.LongDescription_IT !== this.new_product.Description_IT)
-        changes.Description_IT = this.new_product.Description_IT;
+      if (this.category.Title_EN !== this.new_category.Title_EN)
+        changes.Title_EN = this.new_category.Title_EN;
+      if (this.category.Title_IT !== this.new_category.Title_IT)
+        changes.Title_IT = this.new_category.Title_IT;
       if (
-        this.product.ShortDescription_EN !==
-        this.new_product.ShortDescription_EN
+        this.category.ShortDescription_EN !==
+        this.new_category.ShortDescription_EN
       )
-        changes.ShortDescription_EN = this.new_product.ShortDescription_EN;
+        changes.ShortDescription_EN = this.new_category.ShortDescription_EN;
       if (
-        this.product.ShortDescription_IT !==
-        this.new_product.ShortDescription_IT
+        this.category.ShortDescription_IT !==
+        this.new_category.ShortDescription_IT
       )
-        changes.ShortDescription_IT = this.new_product.ShortDescription_IT;
-      if (this.product.Title_EN !== this.new_product.Title_EN)
-        changes.Title_EN = this.new_product.Title_EN;
-      if (this.product.Title_IT !== this.new_product.Title_IT)
-        changes.Title_IT = this.new_product.Title_IT;
-      if (this.product.categories !== this.new_product.categories)
-        changes.categories = this.new_product.categories;
-      if (this.product.Image !== this.new_product.Image) {
-        changes.Image = this.new_product.Image;
-      }
+        changes.ShortDescription_IT = this.new_category.ShortDescription_IT;
+      if (this.category.Image !== this.new_category.Image)
+        changes.Image = this.new_category.Image;
+      if (this.category.URL !== this.new_category.URL)
+        changes.URL = this.new_category.URL;
       return changes;
     },
     clickOnImgInput() {
@@ -204,15 +192,6 @@ export default {
         .then((resp) => {
           this.drawImages(resp.data);
         });
-    },
-    loadProducts() {
-      this.setLoading("products");
-      axios.get(`${this.getBaseUrl}/products`).then((response) => {
-        const resp = response.data;
-        if (resp != null) {
-          this.setProducts(resp);
-        }
-      });
     },
     drawImages(data) {
       this.modal = data;
@@ -239,18 +218,25 @@ export default {
         for (let i = 0; i < this.modal.length; i++) {
           const media = this.modal[i];
           if (media.id == this.selectedMedia) {
-            this.new_product.Image = media;
+            this.new_category.Image = media;
             i = this.modal.length;
             this.showModal = false;
             this.uploadImg = false;
-            this.setNotLoaded("products");
+            this.setNotLoaded("categories");
           }
         }
       }
     },
+    validateURL() {
+      this.new_category.URL = this.new_category.URL.trim()
+        .replace(/\\/g, "")
+        .replace(/\s/g, "")
+        .replace(/\//g, "");
+    },
   },
 };
 </script>
+
 <style lang="scss" scoped>
 @import "./edit.scss";
 </style>

@@ -4,19 +4,16 @@
         Sections
 </template>
 <script>
-import videoBg from "./home/videoBg"
+import videoBg from "./home/videoBg";
 import Sections from "./home/sections";
 
 export default {
-  name: 'Content',
+  name: "Content",
   components: {
     videoBg,
-    Sections
+    Sections,
   },
-  methods: {
-  },
-  mounted(){
-  }
-    
-}
+  methods: {},
+  mounted() {},
+};
 </script>

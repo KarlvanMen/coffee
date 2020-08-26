@@ -1,48 +1,75 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Home from "../views/Home.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: "/",
+    name: "Home",
+    component: Home,
   },
   {
-    path: '*',
-    redirect: '/'
+    path: "*",
+    redirect: "/",
   },
   {
-    path: '/products/:product',
-    name: 'Product',
+    path: "/products",
+    redirect: "/",
+  },
+  {
+    path: "/products/:product",
+    name: "Product",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Product.vue')
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Product.vue"),
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: () => import('../views/Login.vue')
+    path: "/login",
+    name: "Login",
+    component: () => import("../views/Login.vue"),
   },
   {
-    path: '/admin',
-    name: 'Admin',
-    component: () => import('../views/Admin.vue')
+    path: "/admin",
+    name: "Admin",
+    component: () => import("../views/Admin.vue"),
   },
   {
-    path: '/admin/edit/product/:product',
-    name: 'Edit Product',
-    component: () => import('../components/admin/edit_product.vue')
-  }
-]
+    path: "/admin/edit/product/",
+    redirect: "/admin",
+  },
+  {
+    path: "/admin/edit/product/:product",
+    name: "Edit Product",
+    component: () => import("../components/admin/edit_product.vue"),
+  },
+  {
+    path: "/admin/edit/category/",
+    redirect: "/admin",
+  },
+  {
+    path: "/admin/edit/category/:category",
+    name: "Edit Category",
+    component: () => import("../components/admin/edit_category.vue"),
+  },
+  {
+    path: "/admin/edit/page/",
+    redirect: "/admin",
+  },
+  {
+    path: "/admin/edit/page/:page",
+    name: "Edit Page",
+    component: () => import("../components/admin/edit_page.vue"),
+  },
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

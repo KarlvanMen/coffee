@@ -13,86 +13,84 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { mapGetters } from "vuex";
 
 export default {
-    name: "Coordinates",
-    data(){ 
-        return {
-            company: [
-                "Sample Company", "Sample LTD"
-            ],
-            contact: [
-                `E-mail: <a href="#">sample@email.com</a>`, "Phone: +39 012345 012345"
-            ],
-            address: [
-                "Sample street", "Sample city"
-            ],
-            social: [
-                {icon: ['fab', 'facebook-f'], url: '#'},
-                {icon: ['fab', 'twitter'], url: '#'},
-                {icon: ['fab', 'instagram'], url: '#'},
-            ]
+  name: "Coordinates",
+  data() {
+    return {
+      company: ["", ""],
+      contact: ["", ""],
+      address: ["", ""],
+      social: [],
+    };
+  },
+  computed: {
+    ...mapGetters(["getDataLoaded", "getCoordinates"]),
+  },
+  methods: {
+    getText() {
+      if (this.getDataLoaded) {
+        let text = this.getCoordinates;
+        if (text) {
+          this.company = [text.Company, text.CompanyStatus];
+          this.contact = [
+            `${text.Email_EN}: <a href="#">${text.Email}</a>`,
+            `${text.Phone_EN}: ${text.Phone}`,
+          ];
+          this.address = [text.Street, text.City];
+          this.social = [
+            { icon: ["fab", "facebook-f"], url: text.FBurl },
+            { icon: ["fab", "twitter"], url: text.TWurl },
+            { icon: ["fab", "instagram"], url: text.IGurl },
+          ];
         }
+      } else {
+        setTimeout(() => {
+          this.getText();
+        }, 100);
+      }
     },
-    methods:{
-        getText() {
-            axios.get('http://localhost:1337/page-bottom')
-                .then(response => {
-                    const resp = response.data;
-                    if (resp.About) {
-                        const about = resp.About[0]
-                        this.company = [about.TitleEN, about.CompanyStatus]
-                        this.contact = [`${about.EmailEN}: <a href="#">${about.Email}</a>`, `${about.PhoneEN}: ${about.Phone}`]
-                        this.address = [about.Street, about.City]
-                        this.social = [
-                            {icon: ['fab', 'facebook-f'], url: about.Facebook},
-                            {icon: ['fab', 'twitter'], url: about.Twitter},
-                            {icon: ['fab', 'instagram'], url: about.Instagram}
-                        ]
-                    }
-                })
-        }
-    },
-    mounted(){
-        this.getText()
-    }
-}
+  },
+  mounted() {
+    this.getText();
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-@import '../../scss/common.scss';
-.coordinates{
-    width: 80%;
-    margin: 0 auto;
-    padding: 2em 5px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-start;
+@import "../../scss/common.scss";
+.coordinates {
+  width: 80%;
+  margin: 0 auto;
+  padding: 2em 5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  @media all and (min-width: 800px) {
+    align-items: center;
+  }
+  border-top: 1px solid $coffee-brown;
+  border-bottom: 1px solid $coffee-brown;
+  text-align: left;
+  & > div {
+    flex: 1 1 50%;
     @media all and (min-width: 800px) {
-        align-items: center;
+      flex: 1 1 25%;
     }
-    border-top: 1px solid $coffee-brown;
-    border-bottom: 1px solid $coffee-brown;
-    text-align: left;
-    &>div{
-        flex: 1 1 50%;
-        @media all and (min-width: 800px) {
-            flex: 1 1 25%;
-        }
+  }
+  a,
+  &::v-deep a {
+    color: $coffee-brown;
+    &:hover {
+      color: $coffee-brown-light;
     }
-    a,
-    &::v-deep a{
-        color: $coffee-brown;
-        &:hover{
-            color: $coffee-brown-light;
-        }
+  }
+  .social {
+    a {
+      margin: 0 0.5em;
     }
-    .social{
-        a{
-            margin: 0 .5em;
-        }
-    }
+  }
 }
 </style>

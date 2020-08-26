@@ -17,57 +17,60 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { mapGetters } from "vuex";
 
 export default {
   name: "Product",
-  data(){
+  data() {
     return {
-      title: '',
+      title: "",
       shortDesc: "",
-      products: [
-      ]
-    }
+      products: [],
+    };
+  },
+  computed: {
+    ...mapGetters(["getCategoriesLoaded", "getCategories", "getBaseUrl"]),
   },
   methods: {
-    getImgUrl(img) {
-      return require('@/assets/'+img)
-    },
     getProducts() {
-      axios.get('http://localhost:1337/categories')
-        .then(response => {
-            const resp = response.data;
-            if (resp.length) {
-              for (let i = 0; i < resp.length; i++) {
-                const category = resp[i];
-                if (category.url == this.$route.params.product) {
-                  i = resp.length
-                  this.title = category.Title_EN
-                  this.shortDesc = category.Description_EN
-                  this.products = []
-                  for (let j = 0; j < category.products.length; j++) {
-                    const product = category.products[j];
-                    this.products.push({
-                      title: product.Title_EN,
-                      img: `http://localhost:1337${product.Image.url}`,
-                      shortDesc: product.ShortDescription_EN,
-                      description:  product.Description_EN.replace(/\r?\n/g, "<br />")
-                    })
-                  }
-                }
-              }
+      if (this.getCategoriesLoaded) {
+        const categories = this.getCategories;
+        for (let i = 0; i < categories.length; i++) {
+          const category = categories[i];
+          if (category.URL == this.$route.params.product) {
+            i = categories.length;
+            this.title = category.Title_EN;
+            this.shortDesc = category.ShortDescription_EN;
+            this.products = [];
+            for (let j = 0; j < category.products.length; j++) {
+              const product = category.products[j];
+              this.products.push({
+                title: product.Title_EN,
+                img: this.getBaseUrl + product.Image.url,
+                shortDesc: product.ShortDescription_EN,
+                description: product.LongDescription_EN.replace(
+                  /\r?\n/g,
+                  "<br />"
+                ),
+              });
             }
-        })
-    }
+          }
+        }
+      } else {
+        setTimeout(() => {
+          this.getProducts();
+        }, 100);
+      }
+    },
   },
-  mounted(){
-    this.getProducts()
-  }
-}
+  mounted() {
+    this.getProducts();
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-@import '@/scss/common.scss';
+@import "@/scss/common.scss";
 
 .head {
   width: 80%;
@@ -93,7 +96,7 @@ export default {
       flex: 0 1 30%;
     }
     &:hover {
-      box-shadow: 0 0 29px 0 rgba(0,0,0,.18);
+      box-shadow: 0 0 29px 0 rgba(0, 0, 0, 0.18);
       .additional {
         top: auto;
         bottom: 0;
@@ -127,7 +130,7 @@ export default {
       color: white;
       padding: 0 1em 1em;
       font-size: 0.9em;
-      .description{
+      .description {
         text-align: left;
         &::v-deep p {
           margin: 0.5em 0;

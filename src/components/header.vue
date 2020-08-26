@@ -1,80 +1,73 @@
 <template lang="pug">
     .container
-        router-link.logo(to="/" v-bind:style="{ backgroundImage: `url(${logo})` }")
+        router-link.logo(to="/" v-bind:style="{ backgroundImage: `url(${getBaseUrl + logo})` }")
         .lang
-            a(v-for="language in lang" href="#") {{language.title}}
+            .language(v-for="language in lang" ) {{language.title}}
 </template>
 
 <script>
-import axios from 'axios'
-
+import { mapGetters } from "vuex";
 export default {
-    name: 'Header',
-    data: () => {
-        return {
-            lang: [
-                {
-                    title: "IT",
-                    lang: "it"
-                },
-                { 
-                    title: "EN",
-                    lang: "en"
-                }
-            ],
-            logo: 'logo.png'
+  name: "Header",
+  data: () => {
+    return {
+      lang: [],
+      logo: "",
+    };
+  },
+  computed: {
+    ...mapGetters(["getNavigation", "getDataLoaded", "getBaseUrl"]),
+  },
+  methods: {
+    getHeader() {
+      if (!this.getDataLoaded) {
+        setTimeout(() => {
+          this.getHeader();
+        }, 100);
+      } else {
+        let data = this.getNavigation;
+        if (data) {
+          this.lang = data.Languages.lang;
+          this.logo = data.Logo.url;
+        } else {
+          console.log(data);
         }
+      }
     },
-    methods: {
-        getHeader() {
-            axios.get('http://localhost:1337/page-top')
-                .then(response => {
-                    const resp = response.data;
-                    if (resp.Head) {
-                        this.lang = resp.Head[0].Language
-                        this.logo = `http://localhost:1337${resp.Head[0].Logo.url}`
-                    }
-                })
-        },
-        getImgUrl(img) {
-            return require(img)
-        }
-    },
-    mounted(){
-        this.logo = '../../assets/'+this.logo
-        this.getHeader()
-
-    }
-}
+  },
+  mounted() {
+    this.getHeader();
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/common.scss';
-.container{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 0;
-    margin-left: 50%;
-    color: #fff;
-    .logo{
-        background-size: contain;
-        background-repeat: no-repeat;
-        width: 150px;
-        height: 150px;
-        transform: translateX(-50%);
+@import "../scss/common.scss";
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  margin-left: 50%;
+  color: #fff;
+  .logo {
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 150px;
+    height: 150px;
+    transform: translateX(-50%);
+  }
+  .lang {
+    margin: 0 20px;
+    z-index: 100;
+    .language {
+      margin: 0 0 0 0.5em;
+      display: inline-block;
+      transition: all 0.3s;
+      &:hover {
+        color: $coffee-brown-light;
+      }
     }
-    .lang{
-        margin: 0 20px;
-        z-index: 100;
-        a{
-            margin: 0 0 0 0.5em;
-            text-decoration: none;
-            transition: all .3s;
-            &:hover{
-                color: $coffee-brown-light;
-            }
-        }
-    }
+  }
 }
 </style>

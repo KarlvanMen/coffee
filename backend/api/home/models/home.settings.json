@@ -43,6 +43,9 @@
       "type": "component",
       "repeatable": false,
       "component": "custom.copyright"
+    },
+    "Title": {
+      "type": "string"
     }
   }
 }
