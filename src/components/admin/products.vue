@@ -9,7 +9,7 @@
             .icon-container.edit
                 font-awesome-icon.icon(:icon="['fas', 'edit']")
             h4 {{product.Title_EN}}
-            img(:src="getBaseUrl + product.Image.url")
+            img(:src="product.Image.url")
 </template>
 
 <script>
@@ -22,7 +22,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getBaseUrl", "getProducts", "getLoaded"]),
+    ...mapGetters(["getProducts", "getLoaded"]),
   },
   mounted() {
     this.drawProducts();

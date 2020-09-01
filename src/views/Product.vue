@@ -29,7 +29,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getCategoriesLoaded", "getCategories", "getBaseUrl"]),
+    ...mapGetters(["getCategoriesLoaded", "getCategories"]),
   },
   methods: {
     getProducts() {
@@ -46,12 +46,9 @@ export default {
               const product = category.products[j];
               this.products.push({
                 title: product.Title_EN,
-                img: this.getBaseUrl + product.Image.url,
+                img: product.Image.url,
                 shortDesc: product.ShortDescription_EN,
-                description: product.LongDescription_EN.replace(
-                  /\r?\n/g,
-                  "<br />"
-                ),
+                description: product.Description_EN.replace(/\r?\n/g, "<br />"),
               });
             }
           }

@@ -20,7 +20,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getBackground", "getDataLoaded", "getBaseUrl"]),
+    ...mapGetters(["getBackground", "getDataLoaded"]),
   },
   mounted() {
     this.$nextTick(function() {
@@ -55,7 +55,7 @@ export default {
                   this.media = "pic";
                   break;
               }
-              this.src = this.getBaseUrl + background.BackgroundMedia.url;
+              this.src = background.BackgroundMedia.url;
               break;
             default:
               //Color

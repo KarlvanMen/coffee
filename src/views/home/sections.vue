@@ -21,7 +21,6 @@ export default {
       "getSectionsLoaded",
       "getCategories",
       "getCategoriesLoaded",
-      "getBaseUrl",
     ]),
   },
   mounted() {
@@ -60,7 +59,7 @@ export default {
             if (category.id == id) {
               this.products.push({
                 title: category.Title_EN,
-                img: this.getBaseUrl + category.Image.url,
+                img: category.Image.url,
                 link: `/products/${category.URL}`,
               });
               i = categories.length;

@@ -6,7 +6,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     jwt: "",
-    baseUrl: "http://localhost:1337",
+    baseUrl: "https://kmcoffee.herokuapp.com",
     general: {},
     products: null,
     categories: null,

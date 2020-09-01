@@ -1,6 +1,6 @@
 <template lang="pug">
     .container
-        router-link.logo(to="/" v-bind:style="{ backgroundImage: `url(${getBaseUrl + logo})` }")
+        router-link.logo(to="/" v-bind:style="{ backgroundImage: `url(${logo})` }")
         .lang
             .language(v-for="language in lang" ) {{language.title}}
 </template>
@@ -16,7 +16,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getNavigation", "getDataLoaded", "getBaseUrl"]),
+    ...mapGetters(["getNavigation", "getDataLoaded"]),
   },
   methods: {
     getHeader() {

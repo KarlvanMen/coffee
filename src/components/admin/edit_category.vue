@@ -21,9 +21,9 @@
             .section.child-2
                 .child.half
                     h4.title Image
-                    img.prodImg(v-if="new_category.Image" :src="getUrl(new_category.Image.url)")
+                    img.prodImg(v-if="new_category.Image" :src="new_category.Image.url")
                     form.upload-img-form
-                        font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput()")
+                        //- font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput()")
                         font-awesome-icon.upload-icon(:icon="['fas', 'folder-open']" @click="browseImages()")
                         input.upload-img(type="file" name="files" accept="image/jpeg" @change="updateImage($event)")
                 .child.half
@@ -35,7 +35,7 @@
             .close(@click="showModal = false") X
             .content
               .media(v-for="media, i in modal" v-if="isImage(media)" @click='makeActiveMedia(i)' :data-id="media.id")
-                .product-img(v-bind:style="{ backgroundImage: `url(${getBaseUrl + media.url})` }")
+                .product-img(v-bind:style="{ backgroundImage: `url(${media.url})` }")
                 .title {{media.name}}
             .finish(@click="selectMedia()") OK
 </template>
@@ -103,9 +103,6 @@ export default {
           this.setCategories(resp);
         }
       });
-    },
-    getUrl(url) {
-      return this.uploadImg ? url : this.getBaseUrl + url;
     },
     updateImage(e) {
       console.log(e);

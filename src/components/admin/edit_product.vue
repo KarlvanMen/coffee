@@ -28,9 +28,9 @@
             .section.child-2
                 .child.half
                     h4.title Image
-                    img.prodImg(:src="getUrl(new_product.Image.url)")
+                    img.prodImg(:src="new_product.Image.url")
                     form.upload-img-form
-                        font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput()")
+                        //- font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput()")
                         font-awesome-icon.upload-icon(:icon="['fas', 'folder-open']" @click="browseImages()")
                         input.upload-img(type="file" name="files" accept="image/jpeg" @change="updateImage($event)")
                 .child.half
@@ -44,7 +44,7 @@
             .close(@click="showModal = false") X
             .content
               .media(v-for="media, i in modal" v-if="isImage(media)" @click='makeActiveMedia(i)' :data-id="media.id")
-                .product-img(v-bind:style="{ backgroundImage: `url(${getBaseUrl + media.url})` }")
+                .product-img(v-bind:style="{ backgroundImage: `url(${media.url})` }")
                 .title {{media.name}}
             .finish(@click="selectMedia()") OK
 </template>
@@ -92,8 +92,8 @@ export default {
         const prod = this.getProduct(this.$route.params.product);
         if (prod) {
           this.product = prod;
-          this.new_product.Description_EN = this.product.LongDescription_EN;
-          this.new_product.Description_IT = this.product.LongDescription_IT;
+          this.new_product.Description_EN = this.product.Description_EN;
+          this.new_product.Description_IT = this.product.Description_IT;
           this.new_product.Image = this.product.Image;
           this.new_product.ShortDescription_EN = this.product.ShortDescription_EN;
           this.new_product.ShortDescription_IT = this.product.ShortDescription_IT;
@@ -111,9 +111,6 @@ export default {
           this.drawProduct();
         }, 100);
       }
-    },
-    getUrl(url) {
-      return this.uploadImg ? url : this.getBaseUrl + url;
     },
     updateImage(e) {
       const image = e.target.files[0];
@@ -195,15 +192,9 @@ export default {
       if (!this.isJwtSet) this.$router.push({ name: "Login" });
     },
     browseImages() {
-      axios
-        .get(`${this.getBaseUrl}/upload/files`, {
-          headers: {
-            Authorization: `Bearer ${this.getJwt}`,
-          },
-        })
-        .then((resp) => {
-          this.drawImages(resp.data);
-        });
+      axios.get(`${this.getBaseUrl}/upload/files`).then((resp) => {
+        this.drawImages(resp.data);
+      });
     },
     loadProducts() {
       this.setLoading("products");
