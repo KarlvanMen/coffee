@@ -1,39 +1,41 @@
 <template lang="pug">
-    main.category
-        h1 Admin
+    main.edit
+        edit_head(@save="postCategory()")
         h2 Edit 
             u {{new_category.Title_EN}}
         .edit
             .section.child-2
                 .child.half
                     h4.lang Title (EN)
-                    input(v-model="new_category.Title_EN")
+                    input(v-model="new_category.Title_EN" maxlength="30")
                 .child.half
                     h4.lang Title (IT)
-                    input(v-model="new_category.Title_IT")
+                    input(v-model="new_category.Title_IT" maxlength="30")
             .section.child-2
                 .child.half
                     h4.lang Short description (EN)
-                    textarea.short(v-model="new_category.ShortDescription_EN")
+                    textarea.short#descEn(v-model="new_category.ShortDescription_EN" v-bind:maxlength="maxlength")
+                    label.floating(for="descEn") {{new_category.ShortDescription_EN.length}}/{{maxlength}}
                 .child.half
                     h4.lang Short description (IT)
-                    textarea.short(v-model="new_category.ShortDescription_IT")
+                    textarea.short#descIt(v-model="new_category.ShortDescription_IT" v-bind:maxlength="maxlength")
+                    label.floating(for="descIt") {{new_category.ShortDescription_IT.length}}/{{maxlength}}
             .section.child-2
                 .child.half
                     h4.title Image
                     img.prodImg(v-if="new_category.Image" :src="new_category.Image.url")
                     form.upload-img-form
-                        //- font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput()")
+                        font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput()")
                         font-awesome-icon.upload-icon(:icon="['fas', 'folder-open']" @click="browseImages()")
-                        input.upload-img(type="file" name="files" accept="image/jpeg" @change="updateImage($event)")
+                        input.upload-img(type="file" name="files" accept="image/*" @change="updateImage($event)")
                 .child.half
                     h4.title URL
-                    input(v-model="new_category.URL" @change="validateURL()")
-        button.submit(v-on:click="postCategory()") Save
+                    input(v-model="new_category.URL" @change="validateURL()" maxlength="20")
         .modal(v-if="showModal")
           .inner
             .close(@click="showModal = false") X
             .content
+              .loading(v-if="modal == {}") Loading...
               .media(v-for="media, i in modal" v-if="isImage(media)" @click='makeActiveMedia(i)' :data-id="media.id")
                 .product-img(v-bind:style="{ backgroundImage: `url(${media.url})` }")
                 .title {{media.name}}
@@ -41,6 +43,7 @@
 </template>
 
 <script>
+import edit_head from "./edit_head.vue";
 import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
 export default {
@@ -59,8 +62,10 @@ export default {
       modal: {},
       showModal: false,
       selectedMedia: -1,
+      maxlength: 280,
     };
   },
+  components: { edit_head },
   computed: {
     ...mapGetters([
       "getCategory",
@@ -115,6 +120,7 @@ export default {
       };
     },
     postCategory() {
+      this.setNotLoaded("categories");
       axios
         .put(
           `${this.getBaseUrl}/categories/${this.$route.params.category}`,
@@ -142,11 +148,11 @@ export default {
                 })
                 .then((resp) => {
                   if (resp.status == 200) {
-                    this.$router.push({ name: "Admin" });
+                    this.goBack();
                   }
                 });
             } else {
-              this.$router.push({ name: "Admin" });
+              this.goBack();
             }
           }
         });
@@ -180,6 +186,7 @@ export default {
       if (!this.isJwtSet) this.$router.push({ name: "Login" });
     },
     browseImages() {
+      this.showModal = true;
       axios
         .get(`${this.getBaseUrl}/upload/files`, {
           headers: {
@@ -192,7 +199,6 @@ export default {
     },
     drawImages(data) {
       this.modal = data;
-      this.showModal = true;
     },
     isImage(media) {
       return media.mime.split("/")[0] == "image";
@@ -229,6 +235,9 @@ export default {
         .replace(/\\/g, "")
         .replace(/\s/g, "")
         .replace(/\//g, "");
+    },
+    goBack() {
+      this.$router.push({ name: "Admin" });
     },
   },
 };

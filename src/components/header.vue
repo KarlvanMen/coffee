@@ -1,12 +1,13 @@
 <template lang="pug">
     .container
-        router-link.logo(to="/" v-bind:style="{ backgroundImage: `url(${logo})` }")
-        .lang
-            .language(v-for="language in lang" ) {{language.title}}
+      .empty
+      router-link.logo(to="/" v-bind:style="{ backgroundImage: `url(${logo})` }")
+      .lang
+        .language(v-for="language in lang" :class="{white: $route.path == '/'}" @click="changeLang(language.lang)") {{language.title}}
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "Header",
   data: () => {
@@ -19,6 +20,7 @@ export default {
     ...mapGetters(["getNavigation", "getDataLoaded"]),
   },
   methods: {
+    ...mapMutations(["setLang"]),
     getHeader() {
       if (!this.getDataLoaded) {
         setTimeout(() => {
@@ -34,6 +36,9 @@ export default {
         }
       }
     },
+    changeLang(lang) {
+      this.setLang(lang);
+    },
   },
   mounted() {
     this.getHeader();
@@ -48,22 +53,27 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 5px 0;
-  margin-left: 50%;
-  color: #fff;
   .logo {
     background-size: contain;
     background-repeat: no-repeat;
     width: 150px;
     height: 150px;
-    transform: translateX(-50%);
+  }
+  .empty,
+  .lang {
+    width: 5em;
   }
   .lang {
     margin: 0 20px;
     z-index: 100;
+    text-align: right;
     .language {
       margin: 0 0 0 0.5em;
       display: inline-block;
-      transition: all 0.3s;
+      cursor: pointer;
+      &.white {
+        color: #fff;
+      }
       &:hover {
         color: $coffee-brown-light;
       }

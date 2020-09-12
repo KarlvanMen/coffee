@@ -1,6 +1,7 @@
 <template lang="pug">
   main.container
     h1 Admin panel
+    mainpage
     categories
     products
 </template>
@@ -8,27 +9,37 @@
 import { mapGetters, mapMutations } from "vuex";
 import categories from "../components/admin/categories";
 import products from "../components/admin/products";
-import pages from "../components/admin/pages";
+import mainpage from "../components/admin/mainPage";
 import axios from "axios";
 
 export default {
   mounted() {
     this.checkLogIn();
+    this.getGeneral();
     this.getProducts();
     this.getCategories();
   },
   components: {
     categories,
     products,
-    pages,
+    mainpage,
   },
   computed: {
     ...mapGetters(["isJwtSet", "getBaseUrl", "getLoaded"]),
   },
   methods: {
-    ...mapMutations(["setProducts", "setLoading", "setCategories"]),
+    ...mapMutations(["setProducts", "setLoading", "setCategories", "setData"]),
     checkLogIn() {
       if (!this.isJwtSet) this.$router.push({ name: "Login" });
+    },
+    getGeneral() {
+      this.setLoading("general");
+      axios.get(`${this.getBaseUrl}/home`).then((response) => {
+        const resp = response.data;
+        if (resp != null) {
+          this.setData(resp);
+        }
+      });
     },
     getProducts() {
       this.setLoading("products");
@@ -40,15 +51,13 @@ export default {
       });
     },
     getCategories() {
-      if (!this.getLoaded("categories")) {
-        this.setLoading("categories");
-        axios.get(`${this.getBaseUrl}/categories`).then((response) => {
-          const resp = response.data;
-          if (resp != null) {
-            this.setCategories(resp);
-          }
-        });
-      }
+      this.setLoading("categories");
+      axios.get(`${this.getBaseUrl}/categories`).then((response) => {
+        const resp = response.data;
+        if (resp != null) {
+          this.setCategories(resp);
+        }
+      });
     },
   },
 };

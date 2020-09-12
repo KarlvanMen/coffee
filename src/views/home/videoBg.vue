@@ -1,10 +1,9 @@
 <template lang="pug">
-    .background
-        video(v-if="media=='video' && src.length" :autoplay="true" loop muted poster="poster")
+    .background(v-bind:style="{backgroundColor: `${getBackground.Color}`}")
+        video(v-if="media=='video' && src.length" :autoplay="true" loop muted)
             source(:src="src")
-        .static(v-else-if="media=='pic'")
-        .static(v-else-if="media=='color'")
-        .overlay(v-if="media=='video'")
+        .static(v-else-if="media=='pic'" v-bind:style="{backgroundImage: `url(${src})`}")
+        .overlay(v-if="media=='video' || media=='pic'")
 </template>
 
 <script>
@@ -16,7 +15,6 @@ export default {
     return {
       media: "video",
       src: "",
-      poster: "~@/assets/video/poster.jpg",
     };
   },
   computed: {
@@ -91,6 +89,7 @@ export default {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    max-width: none;
     source {
       width: 100%;
       height: 100%;
@@ -102,7 +101,8 @@ export default {
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: rgba(0, 0, 0, 0.35);
+    background-color: #ffffff;
+    opacity: 0.2;
   }
   .static {
     position: absolute;
@@ -110,8 +110,9 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
+    background-position: center;
   }
 }
 </style>

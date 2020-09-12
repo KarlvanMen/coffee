@@ -22,6 +22,7 @@ const store = new Vuex.Store({
       jwt: false,
       products: false,
     },
+    lang: "en",
   },
   mutations: {
     setJwt(state, data) {
@@ -51,6 +52,9 @@ const store = new Vuex.Store({
     setNotLoaded(state, data) {
       state.loading[data] = false;
       state.loaded[data] = false;
+    },
+    setLang(state, lang) {
+      state.lang = lang;
     },
   },
   getters: {
@@ -117,6 +121,9 @@ const store = new Vuex.Store({
     },
     getLoading: (state) => (data) => {
       return state.loading[data];
+    },
+    getLang: (state) => {
+      return state.lang;
     },
   },
 });

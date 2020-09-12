@@ -25,6 +25,7 @@ export default {
   mounted() {
     this.checkPath();
     this.getData();
+    this.checkLang();
   },
   computed: {
     ...mapGetters(["getBaseUrl"]),
@@ -33,7 +34,7 @@ export default {
     this.checkPath();
   },
   methods: {
-    ...mapMutations(["setData", "setCategories"]),
+    ...mapMutations(["setData", "setCategories", "setLang"]),
     getData() {
       this.getHomeData();
       this.getCategories();
@@ -61,11 +62,19 @@ export default {
         routeName == "Admin" ||
         routeName == "Edit Product" ||
         routeName == "Edit Category" ||
-        routeName == "Edit Page"
+        routeName == "Edit Main page"
       ) {
         this.showHeadAndFoot = false;
       } else {
         this.showHeadAndFoot = true;
+      }
+    },
+    checkLang() {
+      const userLang = navigator.language.split("-")[0];
+      if (userLang == "it") {
+        this.setLang("it");
+      } else {
+        this.setLang("en");
       }
     },
   },

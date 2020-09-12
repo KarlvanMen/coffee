@@ -13,7 +13,14 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getDataLoaded", "getCopyright"]),
+    ...mapGetters(["getDataLoaded", "getCopyright", "getLang"]),
+  },
+  watch: {
+    getLang(val) {
+      const text = this.getCopyright;
+      this.copyrights = val == "it" ? text.Copyright_IT : text.Copyright_EN;
+      this.text = val == "it" ? text.Other_IT : text.Other_EN;
+    },
   },
   methods: {
     getText() {

@@ -1,44 +1,47 @@
 <template lang="pug">
-    main.product
-        h1 Admin
+    main.edit
+        edit_head(@save="postProduct()")
         h2 Edit 
             u {{new_product.Title_EN}}
         .edit
             .section.child-2
                 .child.half
                     h4.lang Title (EN)
-                    input(v-model="new_product.Title_EN")
+                    input(v-model="new_product.Title_EN" maxlength="30")
                 .child.half
                     h4.lang Title (IT)
-                    input(v-model="new_product.Title_IT")
+                    input(v-model="new_product.Title_IT" maxlength="30")
             .section.child-2
                 .child.half
                     h4.lang Short description (EN)
-                    textarea.short(v-model="new_product.ShortDescription_EN")
+                    textarea.short#descEn(v-model="new_product.ShortDescription_EN" v-bind:maxlength="maxlength")
+                    label.floating(for="descEn") {{new_product.ShortDescription_EN.length}}/{{maxlength}}
                 .child.half
                     h4.lang Short description (IT)
-                    textarea.short(v-model="new_product.ShortDescription_IT")
+                    textarea.short#descIt(v-model="new_product.ShortDescription_IT" v-bind:maxlength="maxlength")
+                    label.floating(for="descIt") {{new_product.ShortDescription_IT.length}}/{{maxlength}}
             .section
                 .child
                     h4.lang Description (EN)
-                    textarea.long(v-model="new_product.Description_EN")
+                    textarea.long#longdescEn(v-model="new_product.Description_EN" v-bind:maxlength="bigMaxLength")
+                    label.floating(for="longdescEn") {{new_product.Description_EN.length}}/{{bigMaxLength}}
                 .child
                     h4.lang Description (IT)
-                    textarea.long(v-model="new_product.Description_IT")
+                    textarea.long#longdescIt(v-model="new_product.Description_IT" v-bind:maxlength="bigMaxLength")
+                    label.floating(for="longdescIt") {{new_product.Description_IT.length}}/{{bigMaxLength}}
             .section.child-2
                 .child.half
                     h4.title Image
                     img.prodImg(:src="new_product.Image.url")
                     form.upload-img-form
-                        //- font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput()")
+                        font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput()")
                         font-awesome-icon.upload-icon(:icon="['fas', 'folder-open']" @click="browseImages()")
-                        input.upload-img(type="file" name="files" accept="image/jpeg" @change="updateImage($event)")
+                        input.upload-img(type="file" name="files" accept="image/*" @change="updateImage($event)")
                 .child.half
                     h4.title Categories
                     .categories
-                        .category(v-for="cat in new_product.categories")
+                        .cat(v-for="cat in new_product.categories")
                             p {{cat.Title_EN}}
-        button.submit(v-on:click="postProduct()") Save
         .modal(v-if="showModal")
           .inner
             .close(@click="showModal = false") X
@@ -51,6 +54,8 @@
 <script>
 import axios from "axios";
 import { mapGetters, mapMutations } from "vuex";
+import edit_head from "./edit_head.vue";
+
 export default {
   data() {
     return {
@@ -69,8 +74,11 @@ export default {
       modal: {},
       showModal: false,
       selectedMedia: -1,
+      maxlength: 70,
+      bigMaxLength: 200,
     };
   },
+  components: { edit_head },
   mounted() {
     this.checkLogIn();
     this.drawProduct();

@@ -56,13 +56,9 @@ const routes = [
     component: () => import("../components/admin/edit_category.vue"),
   },
   {
-    path: "/admin/edit/page/",
-    redirect: "/admin",
-  },
-  {
-    path: "/admin/edit/page/:page",
-    name: "Edit Page",
-    component: () => import("../components/admin/edit_page.vue"),
+    path: "/admin/edit/mainpage/",
+    name: "Edit Main page",
+    component: () => import("../components/admin/edit_mainpage.vue"),
   },
 ];
 

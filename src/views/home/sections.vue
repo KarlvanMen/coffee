@@ -1,9 +1,9 @@
 <template lang="pug">
     .content
         section.products
-            router-link.product.border(v-for="product in products" :to="product.link")
+            router-link.product(v-for="product in products" :to="product.link" :key="product.link")
                 .product-img(v-bind:style="{ backgroundImage: `url(${product.img})` }")
-                h3.title {{product.title}}
+                h3.title {{getLang == "it" ? product.title_IT : product.title_EN}}
 </template>
 <script>
 import { mapGetters } from "vuex";
@@ -21,6 +21,7 @@ export default {
       "getSectionsLoaded",
       "getCategories",
       "getCategoriesLoaded",
+      "getLang",
     ]),
   },
   mounted() {
@@ -58,7 +59,8 @@ export default {
             const category = categories[i];
             if (category.id == id) {
               this.products.push({
-                title: category.Title_EN,
+                title_EN: category.Title_EN,
+                title_IT: category.Title_IT,
                 img: category.Image.url,
                 link: `/products/${category.URL}`,
               });
@@ -114,8 +116,8 @@ export default {
         }
       }
       .title {
-        background-color: $coffee-brown-light;
-        color: black;
+        // background-color: $coffee-brown-light;
+        color: #ffffff;
         margin-bottom: 0;
         padding: 0.5em 1em;
         flex: 1 1 auto;

@@ -20,6 +20,7 @@ export default {
   data() {
     return {
       categories: [],
+      counter: 0,
     };
   },
   computed: {
@@ -31,7 +32,9 @@ export default {
   methods: {
     drawCategories() {
       if (this.getLoaded("categories")) {
+        this.counter++;
         if (this.getCategories) {
+          this.categories = [];
           this.categories = this.getCategories;
         }
       } else {
@@ -44,7 +47,7 @@ export default {
       return this.getBaseUrl + url;
     },
     toggleAccordion() {
-      this.$el.querySelector(".accordion").classList.toggle("active");
+      this.$el.classList.toggle("active");
 
       const panel = this.$el.querySelector(".panel");
       if (panel) {

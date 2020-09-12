@@ -1,17 +1,17 @@
 <template lang="pug">
   .content
     .head
-      h1.title {{ title }}
-      .description {{shortDesc}}
+      h1.title {{ getLang == 'it' ? title_IT : title_EN }}
+      .description {{getLang == 'it' ? shortDesc_IT : shortDesc_EN}}
     .products
       .product(v-for="product in products")
         .desc-img(v-bind:style="{ backgroundImage: `url(${product.img})` }")
         .description
-          h3.title {{product.title}}
-          .shortDesc {{product.shortDesc}}
+          h3.title {{getLang == 'it' ? product.title_IT : product.title_EN}}
+          .shortDesc {{getLang == 'it' ? product.shortDesc_IT : product.shortDesc_EN}}
         .additional
-          h3.title {{product.title}}
-          .description(v-html="product.description")
+          h3.title {{getLang == 'it' ? product.title_IT : product.title_EN}}
+          .description(v-html="getLang == 'it' ? product.description_IT : product.description_EN")
       .product.empty
       .product.empty
 </template>
@@ -23,13 +23,24 @@ export default {
   name: "Product",
   data() {
     return {
-      title: "",
-      shortDesc: "",
+      category: {},
+      title_EN: "",
+      title_IT: "",
+      shortDesc_EN: "",
+      shortDesc_IT: "",
       products: [],
     };
   },
   computed: {
-    ...mapGetters(["getCategoriesLoaded", "getCategories"]),
+    ...mapGetters(["getCategoriesLoaded", "getCategories", "getLang"]),
+  },
+  watch: {
+    getLang(val) {
+      const text = this.getCategories;
+      this.title = val == "it" ? text.Title_IT : text.Title_EN;
+      this.shortDesc =
+        val == "it" ? text.ShortDescription_IT : text.ShortDescription_EN;
+    },
   },
   methods: {
     getProducts() {
@@ -39,16 +50,28 @@ export default {
           const category = categories[i];
           if (category.URL == this.$route.params.product) {
             i = categories.length;
-            this.title = category.Title_EN;
-            this.shortDesc = category.ShortDescription_EN;
+            this.category = category;
+            this.title_EN = category.Title_EN;
+            this.title_IT = category.Title_IT;
+            this.shortDesc_EN = category.ShortDescription_EN;
+            this.shortDesc_IT = category.ShortDescription_IT;
             this.products = [];
             for (let j = 0; j < category.products.length; j++) {
               const product = category.products[j];
               this.products.push({
-                title: product.Title_EN,
+                title_EN: product.Title_EN,
+                title_IT: product.Title_EN,
                 img: product.Image.url,
-                shortDesc: product.ShortDescription_EN,
-                description: product.Description_EN.replace(/\r?\n/g, "<br />"),
+                shortDesc_EN: product.ShortDescription_EN,
+                shortDesc_IT: product.ShortDescription_EN,
+                description_EN: product.Description_EN.replace(
+                  /\r?\n/g,
+                  "<br />"
+                ),
+                description_IT: product.Description_EN.replace(
+                  /\r?\n/g,
+                  "<br />"
+                ),
               });
             }
           }
@@ -97,6 +120,7 @@ export default {
       .additional {
         top: auto;
         bottom: 0;
+        max-height: 100%;
       }
     }
     &.empty {
@@ -115,6 +139,9 @@ export default {
       .title {
         margin-bottom: 0.5em;
         color: $coffee-brown;
+      }
+      .shortDesc {
+        overflow-wrap: break-word;
       }
     }
     .additional {

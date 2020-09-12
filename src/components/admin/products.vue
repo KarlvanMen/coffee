@@ -38,7 +38,7 @@ export default {
       }
     },
     toggleAccordion() {
-      this.$el.querySelector(".accordion").classList.toggle("active");
+      this.$el.classList.toggle("active");
 
       const panel = this.$el.querySelector(".panel");
       if (panel) {

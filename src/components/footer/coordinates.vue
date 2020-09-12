@@ -25,8 +25,19 @@ export default {
       social: [],
     };
   },
+  watch: {
+    getLang(val) {
+      const text = this.getCoordinates;
+      this.contact = [
+        `${val == "it" ? text.Email_IT : text.Email_EN}: <a href="#">${
+          text.Email
+        }</a>`,
+        `${val == "it" ? text.Phone_IT : text.Phone_EN}: ${text.Phone}`,
+      ];
+    },
+  },
   computed: {
-    ...mapGetters(["getDataLoaded", "getCoordinates"]),
+    ...mapGetters(["getDataLoaded", "getCoordinates", "getLang"]),
   },
   methods: {
     getText() {
@@ -68,16 +79,13 @@ export default {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-start;
-  @media all and (min-width: 800px) {
-    align-items: center;
-  }
   border-top: 1px solid $coffee-brown;
   border-bottom: 1px solid $coffee-brown;
   text-align: left;
   & > div {
     flex: 1 1 50%;
     @media all and (min-width: 800px) {
-      flex: 1 1 25%;
+      flex: 0 1 24%;
     }
   }
   a,

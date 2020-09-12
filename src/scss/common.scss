@@ -3,32 +3,7 @@ $coffee-brown-light: #af9e65;
 $prim: #53e3a6;
 $max-content-width: 960px;
 
-
-.accordion {
-    margin: 0;
-    padding: 1em 0;
-    background-color: #eee;
-    cursor: pointer;
-    &.active,
-    &:hover {
-        background-color: #ccc;
-    }
-    &:after {
-        content: '\002B';
-        color: inherit;
-        font-weight: bold;
-        float: right;
-        margin-left: 5px;
-        margin-right: 10px;
-    }
-    &.active {
-        &::after{
-            content: "\2212";
-        }
-    }
-}
-.panel {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.2s ease-out;
+img,
+video {
+  max-width: 100%;
 }

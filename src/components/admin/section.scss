@@ -1,9 +1,29 @@
 @import "../../scss/common.scss";
+
 .main {
   max-width: $max-content-width;
-  margin: 0 auto;
+  margin: 0 auto 1em;
+  .accordion {
+    margin: 0;
+    padding: 1em 0;
+    background-color: #eee;
+    cursor: pointer;
+    &:hover {
+      background-color: #ccc;
+    }
+    &:after {
+      content: "\002B";
+      color: inherit;
+      font-weight: bold;
+      float: right;
+      margin-left: 5px;
+      margin-right: 10px;
+    }
+  }
   .panel {
-    padding: 10px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -52,6 +72,17 @@
           opacity: 1;
         }
       }
+    }
+  }
+  &.active {
+    .accordion {
+      background-color: #ccc;
+      &::after {
+        content: "\2212";
+      }
+    }
+    .panel {
+      padding: 10px;
     }
   }
 }

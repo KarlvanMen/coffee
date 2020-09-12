@@ -1,21 +1,21 @@
 <template lang="pug">
     .form.shifted-border
         .title
-            h2 {{title}}
+            h2 {{getLang == "it" ? title_IT : title_EN}}
         form(@submit.prevent="onsubmit")
             .left
                 .half.floating-label
                     input(type="text" id="name_input" placeholder=" ")
-                    label.title(for="name_input") {{name}}
+                    label.title(for="name_input") {{getLang == "it" ? name_IT : name_EN}}
                 .half.floating-label
                     input(type="email" id="email_input" placeholder=" ")
-                    label.title(for="email_input") {{email}}
+                    label.title(for="email_input") {{getLang == "it" ? email_IT : email_EN}}
                 .full.floating-label
                     textarea(id="message_input" max-length="800" placeholder=" " v-on:keyup="changeHeight($event)")
-                    label.title(for="message_input") {{msg}}
+                    label.title(for="message_input") {{getLang == "it" ? message_IT : message_EN}}
             .right
                 .full
-                    button.submit.title.shifted-border(type="submit") {{send}}
+                    button.submit.title.shifted-border(type="submit") {{getLang == "it" ? send_IT : send_EN}}
 </template>
 
 <script>
@@ -25,16 +25,21 @@ export default {
   name: "Form",
   data: () => {
     return {
-      title: "",
-      name: "",
-      email: "",
-      msg: "",
-      send: "",
+      title_EN: "",
+      name_EN: "",
+      email_EN: "",
+      message_EN: "",
+      send_EN: "",
+      title_IT: "",
+      name_IT: "",
+      email_IT: "",
+      message_IT: "",
+      send_IT: "",
       sendTo: "",
     };
   },
   computed: {
-    ...mapGetters(["getDataLoaded", "getForm"]),
+    ...mapGetters(["getDataLoaded", "getForm", "getLang"]),
   },
   methods: {
     changeHeight: (event) => {
@@ -51,11 +56,16 @@ export default {
       if (this.getDataLoaded) {
         let text = this.getForm;
         if (text) {
-          this.title = text.Title_EN;
-          this.name = text.Name_EN + ":";
-          this.email = text.Email_EN + ":";
-          this.msg = text.Message_EN + ":";
-          this.send = text.Send_EN;
+          this.title_EN = text.Title_EN;
+          this.name_EN = text.Name_EN + ":";
+          this.email_EN = text.Email_EN + ":";
+          this.message_EN = text.Message_EN + ":";
+          this.send_EN = text.Send_EN;
+          this.title_IT = text.Title_IT;
+          this.name_IT = text.Name_IT + ":";
+          this.email_IT = text.Email_IT + ":";
+          this.message_IT = text.Message_IT + ":";
+          this.send_IT = text.Send_IT;
           this.sendTo = text.SendTo;
         }
       } else {
@@ -170,15 +180,15 @@ export default {
   position: relative;
   background: white;
   border: 1px solid $coffee-brown;
-  &::before {
-    content: "";
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    right: -10px;
-    bottom: -10px;
-    border: 1px solid $coffee-brown;
-    z-index: -100;
-  }
+  // &::before {
+  //   content: "";
+  //   position: absolute;
+  //   top: 10px;
+  //   left: 10px;
+  //   right: -10px;
+  //   bottom: -10px;
+  //   border: 1px solid $coffee-brown;
+  //   z-index: -100;
+  // }
 }
 </style>
