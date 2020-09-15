@@ -53,6 +53,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 5px 0;
+  max-width: $max-content-width-larger;
+  margin: 0 auto;
   .logo {
     background-size: contain;
     background-repeat: no-repeat;
