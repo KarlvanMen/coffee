@@ -21,11 +21,7 @@ const routes = [
   {
     path: "/products/:product",
     name: "Product",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Product.vue"),
+    component: () => import("../views/Product.vue"),
   },
   {
     path: "/login",
@@ -44,7 +40,7 @@ const routes = [
   {
     path: "/admin/edit/product/:product",
     name: "Edit Product",
-    component: () => import("../components/admin/edit_product.vue"),
+    component: () => import("../components/admin/edit/edit_product.vue"),
   },
   {
     path: "/admin/edit/category/",
@@ -53,12 +49,17 @@ const routes = [
   {
     path: "/admin/edit/category/:category",
     name: "Edit Category",
-    component: () => import("../components/admin/edit_category.vue"),
+    component: () => import("../components/admin/edit/edit_category.vue"),
   },
   {
     path: "/admin/edit/mainpage/",
     name: "Edit Main page",
-    component: () => import("../components/admin/edit_mainpage.vue"),
+    component: () => import("../components/admin/edit/edit_mainpage.vue"),
+  },
+  {
+    path: "/admin/edit/terms/",
+    name: "Edit Terms",
+    component: () => import("../components/admin/edit/edit_terms.vue"),
   },
 ];
 

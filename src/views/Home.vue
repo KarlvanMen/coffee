@@ -4,8 +4,8 @@
         Sections
 </template>
 <script>
-import videoBg from "./home/videoBg";
-import Sections from "./home/sections";
+import videoBg from "../components/home/videoBg";
+import Sections from "../components/home/sections";
 
 export default {
   name: "Content",

@@ -57,16 +57,10 @@ export default {
     },
     checkPath() {
       const routeName = this.$route.name;
-      if (
-        routeName == "Login" ||
-        routeName == "Admin" ||
-        routeName == "Edit Product" ||
-        routeName == "Edit Category" ||
-        routeName == "Edit Main page"
-      ) {
-        this.showHeadAndFoot = false;
-      } else {
+      if (routeName == "Product" || routeName == "Home") {
         this.showHeadAndFoot = true;
+      } else {
+        this.showHeadAndFoot = false;
       }
     },
     checkLang() {

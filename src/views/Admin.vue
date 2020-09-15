@@ -4,12 +4,14 @@
     mainpage
     categories
     products
+    terms
 </template>
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import categories from "../components/admin/categories";
 import products from "../components/admin/products";
 import mainpage from "../components/admin/mainPage";
+import terms from "../components/admin/terms";
 import axios from "axios";
 
 export default {
@@ -23,6 +25,7 @@ export default {
     categories,
     products,
     mainpage,
+    terms,
   },
   computed: {
     ...mapGetters(["isJwtSet", "getBaseUrl", "getLoaded"]),

@@ -6,7 +6,7 @@
     .edit
       .header.section(v-if="page.Navigation")
         h2.title.full Header
-        .logo.half
+        .logo.full
           .image
             .label Logo:
             img(:src="page.Navigation.Logo.url")
@@ -14,12 +14,6 @@
               //- font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput('logo')")
               font-awesome-icon.upload-icon(:icon="['fas', 'folder-open']" @click="browseImages('logo')")
               input.upload-img#logo-upload-img(type="file" name="files" accept="image/*" @change="updateImage($event, 'logo')")
-        .languages.half
-          .label Languages:
-          p
-          .language(v-for="lang, i in page.Navigation.Languages.lang")
-            label(for=`#lang-${i}`) {{lang.lang}}: 
-            input(:id="`lang-${i}`" type="text" v-model="lang.title")
       .background.section(v-if="page.Background")
         h2.title.full Background
         .media.half
@@ -66,31 +60,6 @@
           input#contact-title-it(type="text" v-model="page.ContactUs.Title_IT" maxlength="30")
           p
         .quarter
-        .name-en.quarter
-          label(for="contact-name-en") Name field label (EN): 
-          input#contact-name-en(type="text" v-model="page.ContactUs.Name_EN" maxlength="30")
-        .name-it.quarter
-          label(for="contact-name-it") Name field label (IT): 
-          input#contact-name-it(type="text" v-model="page.ContactUs.Name_IT" maxlength="30")
-        .email-en.quarter
-          label(for="contact-name-en") E-mail field label (EN): 
-          input#contact-email-en(type="text" v-model="page.ContactUs.Email_EN" maxlength="30")
-        .email-it.quarter
-          label(for="contact-name-it") E-mail field label (IT): 
-          input#contact-email-it(type="text" v-model="page.ContactUs.Email_IT" maxlength="30")
-        .message-en.quarter
-          label(for="contact-message-en") Message field label (EN): 
-          input#contact-message-en(type="text" v-model="page.ContactUs.Message_EN" maxlength="30")
-        .message-it.quarter
-          label(for="contact-message-it") Message field label (IT): 
-          input#contact-message-it(type="text" v-model="page.ContactUs.Message_IT" maxlength="30")
-        .send-en.quarter
-          label(for="contact-send-en") Send field label (EN): 
-          input#contact-send-en(type="text" v-model="page.ContactUs.Send_EN" maxlength="30")
-        .send-it.quarter
-          label(for="contact-send-it") Send field label (IT): 
-          input#contact-send-it(type="text" v-model="page.ContactUs.Send_IT" maxlength="30")
-          p
         .quarter
         .send-to.half
           label(for="contact-send-to") E-mail address: 
@@ -106,21 +75,9 @@
             label(for="about-company-status") Company status: 
             input#about-company-status(type="text" v-model="page.AboutUs.CompanyStatus" maxlength="50")
         .column.quarter
-          .email-en
-            label(for="about-email-en") E-mail label (EN): 
-            input#about-email-en(type="text" v-model="page.AboutUs.Email_EN" maxlength="30")
-          .email-it
-            label(for="about-email-it") E-mail label (IT): 
-            input#about-email-it(type="text" v-model="page.AboutUs.Email_IT" maxlength="30")
           .email
             label(for="about-email") E-mail: 
             input#about-email(type="text" v-model="page.AboutUs.Email" maxlength="50")
-          .phone-en
-            label(for="about-phone-en") Phone label (EN): 
-            input#about-phone-en(type="text" v-model="page.AboutUs.Phone_EN" maxlength="30")
-          .phone-it
-            label(for="about-phone-it") Phone label (IT): 
-            input#about-phone-it(type="text" v-model="page.AboutUs.Phone_IT" maxlength="30")
           .phone
             label(for="about-phone") Phone: 
             input#about-phone(type="text" v-model="page.AboutUs.Phone" maxlength="30")
