@@ -40,8 +40,11 @@
                 .child.half
                     h4.title Categories
                     .categories
-                        .cat(v-for="cat in new_product.categories")
-                            p {{cat.Title_EN}}
+                        .cat(v-for="cat, i in getCategories" :class="{active: isCategoryActive(cat.id)}")
+                          p {{cat.Title_IT}} | {{cat.Title_EN}}
+                          .icons
+                            font-awesome-icon.ok-icon(:icon="['fas', 'plus-square']" @click="updateCat(cat.id, i, true)")
+                            font-awesome-icon.not-icon(:icon="['fas', 'times-circle']" @click="updateCat(cat.id, i, false)")
         .modal(v-if="showModal")
           .inner
             .close(@click="showModal = false") X
@@ -57,6 +60,7 @@ import { mapGetters, mapMutations } from "vuex";
 import edit_head from "./edit_head.vue";
 
 export default {
+  name: "Edit_product",
   data() {
     return {
       product: {},
@@ -91,6 +95,7 @@ export default {
       "getProduct",
       "getLoading",
       "getLoaded",
+      "getCategories",
     ]),
   },
   methods: {
@@ -107,7 +112,11 @@ export default {
           this.new_product.ShortDescription_IT = this.product.ShortDescription_IT;
           this.new_product.Title_EN = this.product.Title_EN;
           this.new_product.Title_IT = this.product.Title_IT;
-          this.new_product.categories = this.product.categories;
+          for (let i = 0; i < this.product.categories.length; i++) {
+            const category = this.product.categories[i];
+            const catID = category.id;
+            this.new_product.categories.push(catID);
+          }
         } else {
           console.log(prod);
         }
@@ -186,11 +195,9 @@ export default {
         changes.Title_EN = this.new_product.Title_EN;
       if (this.product.Title_IT !== this.new_product.Title_IT)
         changes.Title_IT = this.new_product.Title_IT;
-      if (this.product.categories !== this.new_product.categories)
-        changes.categories = this.new_product.categories;
-      if (this.product.Image !== this.new_product.Image) {
+      changes.categories = this.new_product.categories;
+      if (this.product.Image !== this.new_product.Image)
         changes.Image = this.new_product.Image;
-      }
       return changes;
     },
     clickOnImgInput() {
@@ -247,9 +254,60 @@ export default {
         }
       }
     },
+    isCategoryActive(catID) {
+      let isActive = false;
+      for (let i = 0; i < this.new_product.categories.length; i++) {
+        const productCategory = this.new_product.categories[i];
+        if (productCategory == catID) {
+          isActive = true;
+        }
+      }
+      return isActive;
+    },
+    updateCat(catID, DOMid, status) {
+      if (status) {
+        this.new_product.categories.push(catID);
+      } else {
+        const indexOfCat = this.new_product.categories.indexOf(catID);
+        this.new_product.categories.splice(indexOfCat, 1);
+      }
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 @import "./edit.scss";
+.cat {
+  background-color: #cccccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.2em 0;
+  padding: 0 0.5em;
+  p {
+    opacity: 0.8;
+    margin: 0.2em 0;
+  }
+  .ok-icon {
+    color: green;
+    cursor: pointer;
+  }
+  .not-icon {
+    color: red;
+    display: none;
+    cursor: pointer;
+  }
+  &.active {
+    background-color: #ffffff;
+    p {
+      opacity: 1;
+    }
+    .ok-icon {
+      display: none;
+    }
+    .not-icon {
+      display: initial;
+    }
+  }
+}
 </style>
