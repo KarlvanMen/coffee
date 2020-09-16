@@ -11,6 +11,7 @@ import {
   faTimesCircle,
   faChevronLeft,
   faPlusSquare,
+  faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faTwitter,
@@ -32,7 +33,8 @@ library.add(
   faCheckSquare,
   faTimesCircle,
   faChevronLeft,
-  faPlusSquare
+  faPlusSquare,
+  faExclamationTriangle
 );
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 

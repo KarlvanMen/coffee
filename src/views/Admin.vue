@@ -5,6 +5,7 @@
     categories
     products
     terms
+    customCSS
 </template>
 <script>
 import { mapGetters, mapMutations } from "vuex";
@@ -12,6 +13,7 @@ import categories from "../components/admin/categories";
 import products from "../components/admin/products";
 import mainpage from "../components/admin/mainPage";
 import terms from "../components/admin/terms";
+import customCSS from "../components/admin/customCSS";
 import axios from "axios";
 
 export default {
@@ -26,6 +28,7 @@ export default {
     products,
     mainpage,
     terms,
+    customCSS,
   },
   computed: {
     ...mapGetters(["isJwtSet", "getBaseUrl", "getLoaded"]),

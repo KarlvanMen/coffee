@@ -17,7 +17,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getNavigation", "getDataLoaded"]),
+    ...mapGetters(["getNavigation", "getDataLoaded", "getCSS"]),
   },
   methods: {
     ...mapMutations(["setLang"]),
@@ -39,8 +39,14 @@ export default {
     changeLang(lang) {
       this.setLang(lang);
     },
+    loadStyle() {
+      let element = document.createElement("style");
+      element.innerHTML = this.getCSS.css;
+      document.getElementsByTagName("head")[0].appendChild(element);
+    },
   },
   mounted() {
+    this.loadStyle();
     this.getHeader();
   },
 };

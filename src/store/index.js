@@ -22,7 +22,7 @@ const store = new Vuex.Store({
       jwt: false,
       products: false,
     },
-    lang: "en",
+    lang: "",
   },
   mutations: {
     setJwt(state, data) {
@@ -55,6 +55,10 @@ const store = new Vuex.Store({
     },
     setLang(state, lang) {
       state.lang = lang;
+      Vue.$cookies.set("lang", lang);
+    },
+    setCSS(state, css) {
+      state.general.CustomCSS.css = css;
     },
   },
   getters: {
@@ -123,7 +127,12 @@ const store = new Vuex.Store({
       return state.loading[data];
     },
     getLang: (state) => {
-      return state.lang;
+      if (state.lang == "" && Vue.$cookies.get("lang") !== null)
+        state.lang = Vue.$cookies.get("lang");
+      return state.lang == "" ? false : state.lang;
+    },
+    getCSS: (state) => {
+      return state.general.CustomCSS ? state.general.CustomCSS : false;
     },
   },
 });

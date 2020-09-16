@@ -61,6 +61,11 @@ const routes = [
     name: "Edit Terms",
     component: () => import("../components/admin/edit/edit_terms.vue"),
   },
+  {
+    path: "/admin/edit/style/",
+    name: "Edit Style",
+    component: () => import("../components/admin/edit/edit_customCSS.vue"),
+  },
 ];
 
 const router = new VueRouter({

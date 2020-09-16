@@ -28,7 +28,7 @@ export default {
     this.checkLang();
   },
   computed: {
-    ...mapGetters(["getBaseUrl"]),
+    ...mapGetters(["getBaseUrl", "getLang"]),
   },
   updated() {
     this.checkPath();
@@ -64,11 +64,13 @@ export default {
       }
     },
     checkLang() {
-      const userLang = navigator.language.split("-")[0];
-      if (userLang == "it") {
-        this.setLang("it");
-      } else {
-        this.setLang("en");
+      if (this.getLang == false) {
+        const userLang = navigator.language.split("-")[0];
+        if (userLang == "it") {
+          this.setLang("it");
+        } else {
+          this.setLang("en");
+        }
       }
     },
   },
