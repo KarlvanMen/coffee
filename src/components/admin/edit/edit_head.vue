@@ -20,6 +20,8 @@ export default {
         : this.$router.push("/admin");
     },
     save() {
+      this.$parent.$el.style.opacity = 0.5;
+      this.$parent.$el.style.pointerEvents = "none";
       this.$emit("save");
     },
     cancel() {
