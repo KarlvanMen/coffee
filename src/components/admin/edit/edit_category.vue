@@ -40,10 +40,12 @@
                 .product-img(v-bind:style="{ backgroundImage: `url(${media.url})` }")
                 .title {{media.name}}
             .finish(@click="selectMedia()") OK
+        edit_footer(@deleteContent="deleteThis()")
 </template>
 
 <script>
 import edit_head from "./edit_head.vue";
+import edit_footer from "./edit_footer.vue";
 import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
 export default {
@@ -65,7 +67,7 @@ export default {
       maxlength: 280,
     };
   },
-  components: { edit_head },
+  components: { edit_head, edit_footer },
   computed: {
     ...mapGetters([
       "getCategory",
@@ -238,6 +240,19 @@ export default {
     },
     goBack() {
       this.$router.push({ name: "Admin" });
+    },
+    deleteThis() {
+      this.setNotLoaded("categories");
+      axios
+        .delete(
+          `${this.getBaseUrl}/categories/${this.$route.params.category}`,
+          {
+            headers: { Authorization: `Bearer ${this.getJwt}` },
+          }
+        )
+        .then(() => {
+          this.goBack();
+        });
     },
   },
 };

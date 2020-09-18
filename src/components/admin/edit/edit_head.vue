@@ -15,9 +15,7 @@
 export default {
   methods: {
     goBack() {
-      window.history.length > 1
-        ? this.$router.go(-1)
-        : this.$router.push("/admin");
+      this.$router.push("/admin");
     },
     save() {
       this.$parent.$el.style.opacity = 0.5;

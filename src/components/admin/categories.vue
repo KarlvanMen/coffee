@@ -2,10 +2,10 @@
   main.main
     h2.accordion(v-on:click="toggleAccordion()") Categories
     .categories.panel
-        .add-new.content
+        router-link.add-new.content(:to="'/admin/new/category/'")
             .icon-container.plus
                 font-awesome-icon.icon(:icon="['fas', 'plus-circle']")
-        router-link.content(v-for="cat in categories" :to="`/admin/edit/category/${cat.id}`")
+        router-link.content(v-for="cat in categories" :to="`/admin/edit/category/${cat.id}`" :key="cat.id")
             .icon-container.edit
                 font-awesome-icon.icon(:icon="['fas', 'edit']")
             h4 {{cat.Title_EN}}

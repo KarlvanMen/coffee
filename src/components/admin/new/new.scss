@@ -1,0 +1,196 @@
+@import "../../../scss/common.scss";
+.edit {
+  padding: 1em;
+  max-width: 980px;
+  margin: 4em auto 0;
+  .edit {
+    padding: 1em;
+    margin-top: 0;
+    .section {
+      input,
+      textarea {
+        width: 100%;
+        border: 1px solid #000;
+        border-top-color: #cccccc;
+        border-left-color: #cccccc;
+        border-right-color: #cccccc;
+        outline: none;
+        font-family: inherit;
+        font-size: 1em;
+        line-height: inherit;
+        padding: 2px;
+        &.short {
+          height: 100px;
+        }
+        &.long {
+          height: 350px;
+        }
+        &.error {
+          outline: 2px solid red;
+        }
+      }
+      .child {
+        position: relative;
+        &.half {
+          flex: 1 1 49%;
+          &:not(:first-child) {
+            margin-left: 10px;
+          }
+        }
+        .error {
+          outline: 2px solid red;
+        }
+      }
+      &.child-2 {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      &.child-1 {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        .child.half {
+          flex-grow: 0;
+        }
+      }
+      .floating {
+        position: absolute;
+        top: auto;
+        bottom: 5px;
+        left: auto;
+        right: 10px;
+        font-size: 12px;
+        opacity: 0.8;
+      }
+      .lang,
+      .title {
+        text-align: left;
+        text-transform: none;
+      }
+      .categories {
+        text-align: left;
+      }
+      .upload-img-form {
+        .upload-icon {
+          font-size: 2.5em;
+          color: $prim;
+          cursor: pointer;
+          margin: 0.5em;
+          position: relative;
+          &:hover {
+            color: darken($prim, 20);
+          }
+        }
+        .upload-img {
+          display: none;
+        }
+      }
+    }
+  }
+}
+img {
+  max-width: 80%;
+  max-height: 250px;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10% 5%;
+  .inner {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    height: 100%;
+    border-radius: 3px;
+    position: relative;
+    padding-bottom: 50px;
+    padding-top: 50px;
+    .close {
+      background-color: #ffffff;
+      position: absolute;
+      top: 5px;
+      left: auto;
+      right: 5px;
+      padding: 0.25em 0.5em;
+      margin: 5px 7px;
+      border-radius: 1px;
+      font-weight: 600;
+      border: 1px solid #000000;
+      cursor: pointer;
+      &:hover {
+        color: $coffee-brown;
+      }
+    }
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      padding: 10px 30px;
+      .loading {
+        color: inherit;
+      }
+      .media {
+        width: 24%;
+        position: relative;
+        cursor: pointer;
+        margin-bottom: 1em;
+        margin-left: 1%;
+        &:hover,
+        &.active {
+          background-color: rgba($color: #000000, $alpha: 0.75);
+        }
+        &:first-child,
+        &:nth-child(n + 5) {
+          margin-left: 0;
+        }
+        &.active {
+          outline: 2px solid cornflowerblue;
+        }
+      }
+      .product-img {
+        height: 0;
+        padding-top: 200px;
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
+        &.video {
+          padding-top: 0;
+          height: 200px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+      }
+      .title {
+        position: absolute;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba($color: #000000, $alpha: 0.75);
+        color: #ffffff;
+      }
+    }
+    .finish {
+      position: absolute;
+      top: auto;
+      left: 50%;
+      right: auto;
+      bottom: 10px;
+      border-radius: 1px;
+      background-color: #ffffff;
+      transform: translateX(-50%);
+      cursor: pointer;
+      padding: 0.25em 0.5em;
+      font-weight: 600;
+      border: 1px solid #000000;
+      &:hover {
+        color: $coffee-brown;
+      }
+    }
+  }
+}

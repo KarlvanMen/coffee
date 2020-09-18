@@ -34,6 +34,16 @@ const routes = [
     component: () => import("../views/Admin.vue"),
   },
   {
+    path: "/admin/new/product/",
+    name: "New Product",
+    component: () => import("../components/admin/new/new_product.vue"),
+  },
+  {
+    path: "/admin/new/category/",
+    name: "New Category",
+    component: () => import("../components/admin/new/new_category.vue"),
+  },
+  {
     path: "/admin/edit/product/",
     redirect: "/admin",
   },

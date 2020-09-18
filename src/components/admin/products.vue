@@ -2,10 +2,10 @@
   main.main
     h2.accordion(v-on:click="toggleAccordion()") Products
     .products.panel
-        .add-new.content
+        router-link.add-new.content(:to="`/admin/new/product/`")
             .icon-container.plus
                 font-awesome-icon.icon(:icon="['fas', 'plus-circle']")
-        router-link.content(v-for="product in products" :to="`/admin/edit/product/${product.id}`")
+        router-link.content(v-for="product in products" :to="`/admin/edit/product/${product.id}`" :key="product.id")
             .icon-container.edit
                 font-awesome-icon.icon(:icon="['fas', 'edit']")
             h4 {{product.Title_EN}}

@@ -12,6 +12,7 @@ import {
   faChevronLeft,
   faPlusSquare,
   faExclamationTriangle,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faTwitter,
@@ -22,6 +23,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import router from "./router";
 import store from "./store";
 import VDraggable from "vue-sortable-list";
+import VueSmoothScroll from "vue2-smooth-scroll";
 
 library.add(
   faFacebookF,
@@ -35,7 +37,8 @@ library.add(
   faTimesCircle,
   faChevronLeft,
   faPlusSquare,
-  faExclamationTriangle
+  faExclamationTriangle,
+  faTrash
 );
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
@@ -43,6 +46,7 @@ Vue.config.productionTip = false;
 
 Vue.use(VueCookies);
 Vue.use(VDraggable);
+Vue.use(VueSmoothScroll);
 
 Vue.$cookies.config("7d");
 

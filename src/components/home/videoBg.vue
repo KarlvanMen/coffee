@@ -21,18 +21,38 @@ export default {
     ...mapGetters(["getBackground", "getDataLoaded"]),
   },
   mounted() {
-    this.$nextTick(function() {
-      this.setDimensions();
-      window.addEventListener("resize", this.setDimensions);
-      this.getVideo();
+    let self = this;
+    this.$nextTick(() => {
+      if (this == undefined) {
+        setTimeout(() => {
+          self.initialFunc();
+        }, 100);
+      } else {
+        self.initialFunc();
+      }
     });
   },
   methods: {
+    initialFunc() {
+      if (this == undefined) {
+        setTimeout(() => {
+          this.initialFunc();
+        }, 100);
+      } else {
+        this.setDimensions();
+        window.addEventListener("resize", this.setDimensions);
+        this.getVideo();
+      }
+    },
     setDimensions() {
-      this.$el.style.height = `${window.innerHeight}px`;
-      this.$el.style.marginTop = `-${
-        this.$parent.$parent.$refs.header.$el.getBoundingClientRect().height
-      }px`;
+      if (this == undefined) {
+        this.setDimensions();
+      } else {
+        this.$el.style.height = `${window.innerHeight}px`;
+        this.$el.style.marginTop = `-${
+          this.$parent.$parent.$refs.header.$el.getBoundingClientRect().height
+        }px`;
+      }
     },
     getVideo() {
       if (!this.getDataLoaded) {
