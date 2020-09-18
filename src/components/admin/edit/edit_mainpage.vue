@@ -38,16 +38,18 @@
         //- .top.half
         //-   label(for="#top") Stick to the top?
         //-   input#top(type="checkbox" v-model="page.Background.Top")
-      //- .categories.section(v-if="page.Categories")
-      //-   h2.title.full Product categories
-      //-   .categ.half
-      //-     .cat(v-for="cat, i in page.Categories.Categories.categories") {{drawCategory(cat)}}
-      //-       .icons
-      //-         font-awesome-icon.ok-icon(:icon="['fas', 'plus-square']" @click="updateCat(cat, i, true)")
-      //-         font-awesome-icon.not-icon(:icon="['fas', 'times-circle']" @click="updateCat(cat, i, false)")
-      //-   .count.half
-      //-     label(for="catcount") Count of displayed categories: 
-      //-     input#catcount(type="number" v-model="page.Categories.Count" min="2" max="4" step="1" v-on:keyup="limitToInt($event)" @change="updateCatCount(page.Categories.Count)")
+      .categories.section(v-if="page.Categories")
+        h2.title.full Product categories
+        .categ.half
+          ul.list(v-draggable="{value: page.Categories.Categories.categories}")
+            li.cat(v-for="cat, i in page.Categories.Categories.categories" :key="cat" :class="{inactive: i > page.Categories.Count-1}")
+              | {{drawCategory(cat)}}
+        .count.half
+          label(for="catcount") Count of displayed categories: 
+          select#display(v-model="page.Categories.Count")
+            option(value="2") 2
+            option(value="3") 3
+            option(value="4") 4
       .contact-us.section(v-if="page.ContactUs != null")
         h2.title.full Contact form
         .quarter
@@ -281,25 +283,7 @@ export default {
         }
       }
     },
-    updateCatClass(cat, state) {
-      state ? cat.classList.remove("inactive") : cat.classList.add("inactive");
-    },
-    updateCatCount(count) {
-      const catDOMObjs = this.$el
-        .querySelector(".categories")
-        .querySelectorAll(".cat");
-      let counter = 0;
-      for (let i = 0; i < this.categories.length; i++) {
-        const category = this.categories[i];
-        if (category.display) {
-          if (counter >= count) {
-            category.display = false;
-            this.updateCatClass(catDOMObjs[i], false);
-          }
-          counter++;
-        }
-      }
-    },
+
     updateMainPage() {
       const changes = this.checkForChanges();
       const baseURL = this.getBaseUrl();
@@ -418,12 +402,7 @@ export default {
       margin: 0.2em 0;
       &.inactive {
         background-color: #ccc;
-        .not-icon {
-          display: none;
-        }
-        .ok-icon {
-          display: initial;
-        }
+        // pointer-events: none;
       }
     }
   }
@@ -434,6 +413,16 @@ export default {
       width: auto;
       &#catcount {
         width: 3em;
+      }
+    }
+    .categ {
+      .list {
+        list-style: none;
+        li {
+          border: 1px solid #cccccc;
+          padding: 0.2em 0 0.1em 0;
+          cursor: move;
+        }
       }
     }
   }

@@ -21,6 +21,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import router from "./router";
 import store from "./store";
+import VDraggable from "vue-sortable-list";
 
 library.add(
   faFacebookF,
@@ -41,6 +42,7 @@ Vue.component("font-awesome-icon", FontAwesomeIcon);
 Vue.config.productionTip = false;
 
 Vue.use(VueCookies);
+Vue.use(VDraggable);
 
 Vue.$cookies.config("7d");
 
