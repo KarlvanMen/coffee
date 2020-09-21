@@ -49,7 +49,7 @@
           .inner
             .close(@click="showModal = false") X
             .content
-              .media(v-for="media, i in modal" v-if="isImage(media)" @click='makeActiveMedia(i)' :data-id="media.id")
+              .media(v-for="media, i in modal" v-if="isImage(media)" @click.stop='makeActiveMedia($event)' :data-id="media.id")
                 .product-img(v-bind:style="{ backgroundImage: `url(${media.url})` }")
                 .title {{media.name}}
             .finish(@click="selectMedia()") OK
@@ -119,8 +119,8 @@ export default {
             const catID = category.id;
             this.new_product.categories.push(catID);
           }
-        } else {
-          console.log(prod);
+          // } else {
+          //   console.log(prod);
         }
       } else {
         if (!this.getLoading("products")) {
@@ -140,42 +140,46 @@ export default {
         this.new_product.Image.url = e.target.result;
       };
     },
-    postProduct() {
+    uploadImgToServer() {
+      const formElement = document.querySelector("form");
+      let formData = new FormData(formElement);
+
+      axios
+        .post(`${this.getBaseUrl}/upload/`, formData, {
+          headers: {
+            Authorization: `Bearer ${this.getJwt}`,
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((resp) => {
+          if (resp.status == 200) {
+            let changes = this.checkForChanges();
+            changes.Image = resp.data[0];
+            this.updateProduct(changes);
+          }
+        });
+    },
+    updateProduct(changes) {
       axios
         .put(
           `${this.getBaseUrl}/products/${this.$route.params.product}`,
-          this.checkForChanges(),
+          changes,
           {
             headers: { Authorization: `Bearer ${this.getJwt}` },
           }
         )
         .then((response) => {
           if (response.status == 200) {
-            if (this.uploadImg) {
-              const formElement = document.querySelector("form");
-              let formData = new FormData(formElement);
-
-              formData.append("ref", "product");
-              formData.append("refId", this.$route.params.product);
-              formData.append("field", "Image");
-
-              axios
-                .post(`${this.getBaseUrl}/upload/`, formData, {
-                  headers: {
-                    Authorization: `Bearer ${this.getJwt}`,
-                    "Content-Type": "multipart/form-data",
-                  },
-                })
-                .then((resp) => {
-                  if (resp.status == 200) {
-                    this.$router.push({ name: "Admin" });
-                  }
-                });
-            } else {
-              this.$router.push({ name: "Admin" });
-            }
+            this.$router.push({ name: "Admin" });
           }
         });
+    },
+    postProduct() {
+      if (this.uploadImg) {
+        this.uploadImgToServer();
+      } else {
+        this.updateProduct(this.checkForChanges());
+      }
     },
     checkForChanges() {
       let changes = {};
@@ -229,12 +233,16 @@ export default {
     isImage(media) {
       return media.mime.split("/")[0] == "image";
     },
-    makeActiveMedia(i) {
+    makeActiveMedia(event) {
       const DOMmodal = this.$el.querySelector(".modal");
       const modalMediaArr = DOMmodal.querySelectorAll(".media");
+      const activeID = event.target.dataset.id
+        ? event.target.dataset.id
+        : event.target.parentNode.dataset.id;
       for (let j = 0; j < modalMediaArr.length; j++) {
         const modalMedia = modalMediaArr[j];
-        if (i == j) {
+
+        if (activeID == modalMedia.dataset.id) {
           modalMedia.classList.add("active");
           this.selectedMedia = modalMedia.dataset.id;
         } else {
