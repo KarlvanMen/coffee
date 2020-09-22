@@ -9,7 +9,7 @@
             .icon-container.edit
                 font-awesome-icon.icon(:icon="['fas', 'edit']")
             h4 {{product.Title_EN}}
-            img(:src="product.Image.url")
+            img(:src="product.Image.url" v-if="product.Image")
 </template>
 
 <script>

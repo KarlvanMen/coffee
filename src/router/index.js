@@ -81,6 +81,11 @@ const routes = [
     name: "View messages",
     component: () => import("../components/admin/view/view_messages.vue"),
   },
+  {
+    path: "/admin/view/media/",
+    name: "View media",
+    component: () => import("../components/admin/view/view_media.vue"),
+  },
 ];
 
 const router = new VueRouter({

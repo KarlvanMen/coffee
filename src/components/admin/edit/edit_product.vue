@@ -32,7 +32,7 @@
             .section.child-2
                 .child.half
                     h4.title Image
-                    img.prodImg(:src="new_product.Image.url")
+                    img.prodImg(:src="new_product.Image.url" v-if="new_product.Image")
                     form.upload-img-form
                         font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput()")
                         font-awesome-icon.upload-icon(:icon="['fas', 'folder-open']" @click="browseImages()")

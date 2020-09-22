@@ -9,9 +9,9 @@
         .logo.full
           .image
             .label Logo:
-            img(:src="page.Navigation.Logo.url")
-            form.upload-img-form
-              //- font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput('logo')")
+            img(:src="page.Navigation.Logo.url" v-if="page.Navigation.Logo")
+            form.upload-img-form.logo-form
+              font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput('logo')")
               font-awesome-icon.upload-icon(:icon="['fas', 'folder-open']" @click="browseImages('logo')")
               input.upload-img#logo-upload-img(type="file" name="files" accept="image/*" @change="updateImage($event, 'logo')")
       .background.section(v-if="page.Background")
@@ -23,8 +23,8 @@
           .video(v-else-if="page.Background.BackgroundMedia.mime.split('/')[0] == 'video'")
             video(controls :key="page.Background.BackgroundMedia.url")
               source(:src="page.Background.BackgroundMedia.url")
-          form.upload-img-form
-            //- font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput('background')")
+          form.upload-img-form.background-form
+            font-awesome-icon.upload-icon(:icon="['fas', 'file-upload']" @click="clickOnImgInput('background')")
             font-awesome-icon.upload-icon(:icon="['fas', 'folder-open']" @click="browseImages('background')")
             input.upload-img#background-upload-img(type="file" name="files" accept="video/*,image/*" @change="updateImage($event, 'background')")
         .color.half
@@ -122,7 +122,7 @@
       .inner
         .close(@click="showModal = false") X
         .content
-          .media(v-for="media, i in modal" v-if="currentlyOpenedModal == 'logo' ? isImage(media) : true" @click='makeActiveMedia(i)' :data-id="media.id")
+          .media(v-for="media, i in modal" v-if="currentlyOpenedModal == 'logo' ? isImage(media) : true" @click='makeActiveMedia($event)' :data-id="media.id" :key="media.id")
             .product-img(v-if="isImage(media)" v-bind:style="{ backgroundImage: `url(${media.url})` }")
             .product-img.video(v-else)
               video
@@ -191,8 +191,8 @@ export default {
       this.$el.querySelector(`#${target}-upload-img`).click();
     },
     browseImages(target) {
+      this.currentlyOpenedModal = target;
       axios.get(`${this.getBaseUrl()}/upload/files`).then((resp) => {
-        this.currentlyOpenedModal = target;
         this.drawImages(resp.data);
       });
     },
@@ -206,9 +206,15 @@ export default {
       switch (target) {
         case "logo":
           this.uploadImg.logo = true;
-          this.page.Navigation.Logo.url = URL.createObjectURL(
-            event.target.files[0]
-          );
+          if (this.page.Navigation.Logo) {
+            this.page.Navigation.Logo.url = URL.createObjectURL(
+              event.target.files[0]
+            );
+          } else {
+            this.page.Navigation.Logo = {
+              url: URL.createObjectURL(event.target.files[0]),
+            };
+          }
           break;
         case "background":
           this.uploadImg.background = true;
@@ -224,12 +230,19 @@ export default {
     isImage(media) {
       return media.mime.split("/")[0] == "image";
     },
-    makeActiveMedia(i) {
+    makeActiveMedia(event) {
       const DOMmodal = this.$el.querySelector(".modal");
       const modalMediaArr = DOMmodal.querySelectorAll(".media");
+      let target = event.target;
+      let activeID = target.dataset.id;
+      while (activeID == null) {
+        target = target.parentNode;
+        activeID = target.dataset.id;
+      }
       for (let j = 0; j < modalMediaArr.length; j++) {
         const modalMedia = modalMediaArr[j];
-        if (i == j) {
+
+        if (activeID == modalMedia.dataset.id) {
           modalMedia.classList.add("active");
           this.selectedMedia = modalMedia.dataset.id;
         } else {
@@ -283,8 +296,55 @@ export default {
         }
       }
     },
-
+    uploadFilesToServer() {
+      let self = this;
+      let requests = [];
+      if (self.uploadImg.logo) {
+        let formElement = document.querySelector(".logo-form");
+        let formData = new FormData(formElement);
+        requests.push(
+          axios.post(`${this.getBaseUrl()}/upload/`, formData, {
+            headers: {
+              Authorization: `Bearer ${this.getJwt()}`,
+              "Content-Type": "multipart/form-data",
+            },
+          })
+        );
+      }
+      if (self.uploadImg.background) {
+        let formElement = document.querySelector(".background-form");
+        let formData = new FormData(formElement);
+        requests.push(
+          axios.post(`${this.getBaseUrl()}/upload/`, formData, {
+            headers: {
+              Authorization: `Bearer ${this.getJwt()}`,
+              "Content-Type": "multipart/form-data",
+            },
+          })
+        );
+      }
+      axios.all(requests).then(
+        axios.spread((...responses) => {
+          if (self.uploadImg.logo && self.uploadImg.background) {
+            self.page.Navigation.Logo = responses[0].data[0];
+            self.page.Background.BackgroundMedia = responses[1].data[0];
+          } else if (self.uploadImg.logo) {
+            self.page.Navigation.Logo = responses[0].data[0];
+          } else if (self.uploadImg.background) {
+            self.page.Background.BackgroundMedia = responses[0].data[0];
+          }
+          self.updatePage();
+        })
+      );
+    },
     updateMainPage() {
+      if (this.uploadImg.logo || this.uploadImg.background) {
+        this.uploadFilesToServer();
+      } else {
+        this.updatePage();
+      }
+    },
+    updatePage() {
       const changes = this.checkForChanges();
       const baseURL = this.getBaseUrl();
       if (changes !== {}) {
