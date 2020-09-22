@@ -2,16 +2,16 @@
     .form.shifted-border
         .title
             h2 {{getLang == "it" ? title_IT : title_EN}}
-        form(@submit.prevent="onsubmit")
+        form(@submit.prevent="onsubmit" :class="{disabled: sending}")
             .left
                 .half.floating-label
-                    input(type="text" id="name_input" placeholder=" ")
+                    input(type="text" id="name_input" placeholder=" " v-model="form.name")
                     label.title(for="name_input") {{getLang == "it" ? name_IT : name_EN}}
                 .half.floating-label
-                    input(type="email" id="email_input" placeholder=" ")
+                    input(type="email" id="email_input" placeholder=" " v-model="form.email")
                     label.title(for="email_input") {{getLang == "it" ? email_IT : email_EN}}
                 .full.floating-label
-                    textarea(id="message_input" max-length="800" placeholder=" " v-on:keyup="changeHeight($event)")
+                    textarea(id="message_input" max-length="800" placeholder=" " v-on:keyup="changeHeight($event)" v-model="form.message")
                     label.title(for="message_input") {{getLang == "it" ? message_IT : message_EN}}
             .right
                 .full
@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import Axios from "axios";
+import DOMPurify from "dompurify";
 import { mapGetters } from "vuex";
 
 export default {
@@ -35,11 +37,17 @@ export default {
       email_IT: "",
       message_IT: "",
       send_IT: "",
-      sendTo: "",
+      form: {
+        name: "",
+        email: "",
+        message: "",
+        sendTo: "",
+      },
+      sending: false,
     };
   },
   computed: {
-    ...mapGetters(["getDataLoaded", "getForm", "getLang"]),
+    ...mapGetters(["getDataLoaded", "getForm", "getLang", "getBaseUrl"]),
   },
   methods: {
     changeHeight: (event) => {
@@ -51,7 +59,27 @@ export default {
         target.style.height = `${scrollHeight + 1}px`;
       }
     },
-    onsubmit: () => {},
+    onsubmit() {
+      let self = this;
+      this.sending = true;
+      Axios.post(`${this.getBaseUrl}/contact-forms`, {
+        to: this.form.sendTo,
+        subject: "Client form request",
+        html: `<p><b>From:</b> ${DOMPurify.sanitize(
+          this.form.name
+        )} ${DOMPurify.sanitize(
+          this.form.email
+        )}</p><p><b>Message:</b> ${DOMPurify.sanitize(this.form.message)}</p>`,
+        text: "There's a new form message from website.",
+      });
+      self.form = {
+        name: "",
+        email: "",
+        message: "",
+        sendTo: "",
+      };
+      self.sending = false;
+    },
     getText() {
       if (this.getDataLoaded) {
         let text = this.getForm;
@@ -66,7 +94,7 @@ export default {
           this.email_IT = text.Email_IT + ":";
           this.message_IT = text.Message_IT + ":";
           this.send_IT = text.Send_IT;
-          this.sendTo = text.SendTo;
+          this.form.sendTo = text.SendTo;
         }
       } else {
         setTimeout(() => {
@@ -93,6 +121,10 @@ export default {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
+    &.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
     input,
     textarea {
       width: 100%;

@@ -4,6 +4,7 @@
     mainpage
     categories
     products
+    messages
     terms
     customCSS
 </template>
@@ -14,6 +15,7 @@ import products from "../components/admin/products";
 import mainpage from "../components/admin/mainPage";
 import terms from "../components/admin/terms";
 import customCSS from "../components/admin/customCSS";
+import messages from "../components/admin/messages";
 import axios from "axios";
 
 export default {
@@ -29,6 +31,7 @@ export default {
     mainpage,
     terms,
     customCSS,
+    messages,
   },
   computed: {
     ...mapGetters(["isJwtSet", "getBaseUrl", "getLoaded"]),
