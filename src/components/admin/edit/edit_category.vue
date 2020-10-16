@@ -112,51 +112,53 @@ export default {
       });
     },
     updateImage(e) {
-      console.log(e);
       const image = e.target.files[0];
       const reader = new FileReader();
       reader.readAsDataURL(image);
       reader.onload = (e) => {
         this.uploadImg = true;
-        this.new_category.Image.url = e.target.result;
+        this.new_category.Image = false;
+        this.new_category.Image = { url: e.target.result };
       };
     },
     postCategory() {
+      if (this.uploadImg) {
+        this.uploadImgToServer();
+      } else {
+        this.updateCategory(this.checkForChanges());
+      }
+    },
+    uploadImgToServer() {
+      const formElement = document.querySelector(".upload-img-form");
+      let formData = new FormData(formElement);
+
+      axios
+        .post(`${this.getBaseUrl}/upload/`, formData, {
+          headers: {
+            Authorization: `Bearer ${this.getJwt}`,
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((resp) => {
+          if (resp.status == 200) {
+            let changes = this.checkForChanges();
+            changes.Image = resp.data[0];
+            this.updateCategory(changes);
+          }
+        });
+    },
+    updateCategory(changes) {
       this.setNotLoaded("categories");
       axios
         .put(
           `${this.getBaseUrl}/categories/${this.$route.params.category}`,
-          this.checkForChanges(),
+          changes,
           {
             headers: { Authorization: `Bearer ${this.getJwt}` },
           }
         )
-        .then((response) => {
-          if (response.status == 200) {
-            if (this.uploadImg) {
-              const formElement = document.querySelector("form");
-              let formData = new FormData(formElement);
-
-              formData.append("ref", "category");
-              formData.append("refId", this.$route.params.category);
-              formData.append("field", "Image");
-
-              axios
-                .post(`${this.getBaseUrl}/upload/`, formData, {
-                  headers: {
-                    Authorization: `Bearer ${this.getJwt}`,
-                    "Content-Type": "multipart/form-data",
-                  },
-                })
-                .then((resp) => {
-                  if (resp.status == 200) {
-                    this.goBack();
-                  }
-                });
-            } else {
-              this.goBack();
-            }
-          }
+        .then(() => {
+          this.goBack();
         });
     },
     checkForChanges() {

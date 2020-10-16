@@ -211,22 +211,18 @@ export default {
       switch (target) {
         case "logo":
           this.uploadImg.logo = true;
-          if (this.page.Navigation.Logo) {
-            this.page.Navigation.Logo.url = URL.createObjectURL(
-              event.target.files[0]
-            );
-          } else {
-            this.page.Navigation.Logo = {
-              url: URL.createObjectURL(event.target.files[0]),
-            };
-          }
+          this.page.Navigation.Logo = false;
+          this.page.Navigation.Logo = {
+            url: URL.createObjectURL(event.target.files[0]),
+          };
           break;
         case "background":
           this.uploadImg.background = true;
-          this.page.Background.BackgroundMedia.mime = type;
-          this.page.Background.BackgroundMedia.url = URL.createObjectURL(
-            event.target.files[0]
-          );
+          this.page.Background.BackgroundMedia = false;
+          this.page.Background.BackgroundMedia = {
+            mime: type,
+            url: URL.createObjectURL(event.target.files[0]),
+          };
           break;
         default:
           break;

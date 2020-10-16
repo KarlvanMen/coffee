@@ -1,6 +1,6 @@
 <template lang="pug">
     main.edit
-        edit_head(@save="postProduct()")
+        edit_head(@save="checkProduct()")
         h2 New product 
             u {{new_product.Title_EN}} | {{new_product.Title_IT}} 
         .edit
@@ -116,36 +116,52 @@ export default {
       reader.readAsDataURL(image);
       reader.onload = (e) => {
         this.uploadImg = true;
-        this.new_product.Image.url = e.target.result;
+        this.new_product.Image = false;
+        this.new_product.Image = { url: e.target.result };
       };
     },
-    postProduct() {
+    checkProduct() {
       if (this.validateData()) {
         this.getProductData();
-        axios
-          .post(`${this.getBaseUrl}/products/`, this.new_product, {
-            headers: { Authorization: `Bearer ${this.getJwt}` },
-          })
-          .then(() => {
-            this.$router.push({ name: "Admin" });
-          });
+        if (this.uploadImg) {
+          this.uploadImgToServer();
+        } else {
+          this.postCategory();
+        }
       } else {
         this.unblank();
         this.scrollToFirstError();
       }
     },
+    postProduct() {
+      axios
+        .post(`${this.getBaseUrl}/products/`, this.new_product, {
+          headers: { Authorization: `Bearer ${this.getJwt}` },
+        })
+        .then(() => {
+          this.$router.push({ name: "Admin" });
+        });
+    },
     getProductData() {
       this.post_product = JSON.parse(JSON.stringify(this.new_product));
-      if (this.uploadImg) {
-        const formElement = document.querySelector("form");
-        let formData = new FormData(formElement);
+    },
+    uploadImgToServer() {
+      const formElement = document.querySelector("form");
+      let formData = new FormData(formElement);
 
-        formData.append("ref", "product");
-        formData.append("refId", this.$route.params.product);
-        formData.append("field", "Image");
-
-        this.post_product.Image = formData;
-      }
+      axios
+        .post(`${this.getBaseUrl}/upload/`, formData, {
+          headers: {
+            Authorization: `Bearer ${this.getJwt}`,
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((resp) => {
+          if (resp.status == 200) {
+            this.post_product.Image = resp.data[0];
+          }
+          this.postProduct();
+        });
     },
     clickOnImgInput() {
       this.$el.querySelector(".upload-img").click();

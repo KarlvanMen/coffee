@@ -119,8 +119,6 @@ export default {
             const catID = category.id;
             this.new_product.categories.push(catID);
           }
-          // } else {
-          //   console.log(prod);
         }
       } else {
         if (!this.getLoading("products")) {
@@ -137,7 +135,8 @@ export default {
       reader.readAsDataURL(image);
       reader.onload = (e) => {
         this.uploadImg = true;
-        this.new_product.Image.url = e.target.result;
+        this.new_product.Image = false;
+        this.new_product.Image = { url: e.target.result };
       };
     },
     uploadImgToServer() {

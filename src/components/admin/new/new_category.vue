@@ -1,6 +1,6 @@
 <template lang="pug">
     main.edit
-        edit_head(@save="postCategory()")
+        edit_head(@save="checkCategory()")
         h2 New category 
             u {{new_category.Title_EN}} | {{new_category.Title_IT}} 
         .edit
@@ -85,30 +85,37 @@ export default {
   methods: {
     ...mapMutations(["setCategories", "setNotLoaded"]),
     updateImage(e) {
-      console.log(e);
       const image = e.target.files[0];
       const reader = new FileReader();
       reader.readAsDataURL(image);
       reader.onload = (e) => {
         this.uploadImg = true;
-        this.new_category.Image.url = e.target.result;
+        this.new_category.Image = false;
+        this.new_category.Image = { url: e.target.result };
       };
     },
-    postCategory() {
+    checkCategory() {
       if (this.validateData()) {
         this.getCategoryData();
-        this.setNotLoaded("categories");
-        axios
-          .post(`${this.getBaseUrl}/categories/`, this.post_category, {
-            headers: { Authorization: `Bearer ${this.getJwt}` },
-          })
-          .then((resp) => {
-            this.updateCategories(resp.data);
-          });
+        if (this.uploadImg) {
+          this.uploadImgToServer();
+        } else {
+          this.postCategory();
+        }
       } else {
         this.unblank();
         this.scrollToFirstError();
       }
+    },
+    postCategory() {
+      this.setNotLoaded("categories");
+      axios
+        .post(`${this.getBaseUrl}/categories/`, this.post_category, {
+          headers: { Authorization: `Bearer ${this.getJwt}` },
+        })
+        .then((resp) => {
+          this.updateCategories(resp.data);
+        });
     },
     checkForChanges() {
       let changes = {};
@@ -244,16 +251,24 @@ export default {
     },
     getCategoryData() {
       this.post_category = JSON.parse(JSON.stringify(this.new_category));
-      if (this.uploadImg) {
-        const formElement = document.querySelector("form");
-        let formData = new FormData(formElement);
+    },
+    uploadImgToServer() {
+      const formElement = document.querySelector("form");
+      let formData = new FormData(formElement);
 
-        formData.append("ref", "product");
-        formData.append("refId", this.$route.params.product);
-        formData.append("field", "Image");
-
-        this.post_category.Image = formData;
-      }
+      axios
+        .post(`${this.getBaseUrl}/upload/`, formData, {
+          headers: {
+            Authorization: `Bearer ${this.getJwt}`,
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((resp) => {
+          if (resp.status == 200) {
+            this.post_category.Image = resp.data[0];
+          }
+          this.postCategory();
+        });
     },
     unblank() {
       this.$el.style.opacity = 1;
