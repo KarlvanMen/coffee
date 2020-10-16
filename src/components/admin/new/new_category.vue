@@ -37,7 +37,7 @@
             .close(@click="showModal = false") X
             .content
               .loading(v-if="modal == {}") Loading...
-              .media(v-for="media, i in modal" v-if="isImage(media)" @click='makeActiveMedia(i)' :data-id="media.id")
+              .media(v-for="media in modal" v-if="isImage(media)" @click='makeActiveMedia($event)' :data-id="media.id")
                 .product-img(v-bind:style="{ backgroundImage: `url(${media.url})` }")
                 .title {{media.name}}
             .finish(@click="selectMedia()") OK
@@ -156,12 +156,14 @@ export default {
     isImage(media) {
       return media.mime.split("/")[0] == "image";
     },
-    makeActiveMedia(i) {
+    makeActiveMedia(event) {
       const DOMmodal = this.$el.querySelector(".modal");
       const modalMediaArr = DOMmodal.querySelectorAll(".media");
+      let target = event.target;
+      let activeID = target.dataset.id;
       for (let j = 0; j < modalMediaArr.length; j++) {
         const modalMedia = modalMediaArr[j];
-        if (i == j) {
+        if (activeID == modalMedia.dataset.id) {
           modalMedia.classList.add("active");
           this.selectedMedia = modalMedia.dataset.id;
         } else {

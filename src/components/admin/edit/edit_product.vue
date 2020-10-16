@@ -236,9 +236,12 @@ export default {
     makeActiveMedia(event) {
       const DOMmodal = this.$el.querySelector(".modal");
       const modalMediaArr = DOMmodal.querySelectorAll(".media");
-      const activeID = event.target.dataset.id
-        ? event.target.dataset.id
-        : event.target.parentNode.dataset.id;
+      let target = event.target;
+      let activeID = target.dataset.id;
+      while (activeID == null) {
+        target = target.parentNode;
+        activeID = target.dataset.id;
+      }
       for (let j = 0; j < modalMediaArr.length; j++) {
         const modalMedia = modalMediaArr[j];
 
