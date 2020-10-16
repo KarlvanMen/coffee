@@ -1,9 +1,9 @@
 <template lang="pug">
     .content
-        section.products
-            router-link.product(v-for="product, i in products" :to="product.link" :key="product.link" v-if="i < count")
-                .product-img(v-bind:style="{ backgroundImage: `url(${product.img})` }")
-                h3.title {{getLang == "it" ? product.title_IT : product.title_EN}}
+      section.products
+        router-link.product(v-for="product, i in products" :to="product.link" :key="product.link" v-if="i < count")
+          .product-img(v-bind:style="{ backgroundImage: `url(${product.img})` }")
+          h3.title {{getLang == "it" ? product.title_IT : product.title_EN}}
 </template>
 <script>
 import { mapGetters } from "vuex";

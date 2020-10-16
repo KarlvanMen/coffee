@@ -174,11 +174,16 @@ export default {
         const data = this.getData();
         this.origin = data;
         this.page = JSON.parse(JSON.stringify(data));
-        this.categories = this.getCategories();
         if (this.page == {}) {
           setTimeout(() => {
             this.setData();
           }, 100);
+        }
+        this.categories = this.getCategories();
+        this.page.Categories.Categories.categories = [];
+        for (let i = 0; i < this.categories.length; i++) {
+          const category = this.categories[i];
+          this.page.Categories.Categories.categories.push(category.id);
         }
       }
     },
