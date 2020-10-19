@@ -126,16 +126,16 @@ export default {
         if (this.uploadImg) {
           this.uploadImgToServer();
         } else {
-          this.postCategory();
+          this.postProduct(this.post_product);
         }
       } else {
         this.unblank();
         this.scrollToFirstError();
       }
     },
-    postProduct() {
+    postProduct(data) {
       axios
-        .post(`${this.getBaseUrl}/products/`, this.new_product, {
+        .post(`${this.getBaseUrl}/products/`, data, {
           headers: { Authorization: `Bearer ${this.getJwt}` },
         })
         .then(() => {
@@ -148,7 +148,7 @@ export default {
     uploadImgToServer() {
       const formElement = document.querySelector("form");
       let formData = new FormData(formElement);
-
+      let self = this;
       axios
         .post(`${this.getBaseUrl}/upload/`, formData, {
           headers: {
@@ -158,9 +158,9 @@ export default {
         })
         .then((resp) => {
           if (resp.status == 200) {
-            this.post_product.Image = resp.data[0];
+            self.post_product.Image = resp.data[0];
           }
-          this.postProduct();
+          self.postProduct(self.post_product);
         });
     },
     clickOnImgInput() {

@@ -44,7 +44,8 @@ export default {
         },
       }).then((response) => {
         const data = response.data;
-        this.messages = data;
+        const messagesReversed = data.reverse();
+        this.messages = messagesReversed;
       });
     },
     getDate(dateString) {
