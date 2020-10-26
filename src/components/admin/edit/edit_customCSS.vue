@@ -3,6 +3,8 @@
     edit_head(@save="update()")
     h2 Edit 
       u Custom Style
+    p
+      i Add #app at the beginning to override specific styles
     .edit
       .section
         .label Styling

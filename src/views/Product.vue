@@ -61,7 +61,7 @@ export default {
               this.products.push({
                 title_EN: product.Title_EN,
                 title_IT: product.Title_EN,
-                img: product.Image.url,
+                img: product.Image ? product.Image.url : "",
                 shortDesc_EN: product.ShortDescription_EN,
                 shortDesc_IT: product.ShortDescription_EN,
                 description_EN: product.Description_EN.replace(
@@ -131,8 +131,8 @@ export default {
       margin: 2em 1em;
       padding-bottom: 100%;
       background-position: center;
-      background-repeat: none;
       background-size: contain;
+      background-repeat: no-repeat;
     }
     .description {
       margin-top: 2em;

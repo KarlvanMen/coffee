@@ -36,6 +36,7 @@
     "sass": "^1.26.10",
     "strapi-sdk-javascript": "^0.3.3",
     "vue-cookies": "^1.7.3",
+    "vue-loading-overlay": "^3.4.2",
     "vue-router": "^3.4.3",
     "vue-template-compiler": "^2.6.11",
     "vue2-google-maps": "^0.10.7"
