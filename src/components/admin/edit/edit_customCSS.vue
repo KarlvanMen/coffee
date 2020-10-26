@@ -73,7 +73,7 @@ export default {
               }
             }
             if (realError) {
-              self.showError(data.errors);
+              self.showError(errors);
             } else {
               self.updateCSS();
             }
