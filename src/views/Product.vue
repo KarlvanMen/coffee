@@ -5,13 +5,17 @@
       .description {{getLang == 'it' ? shortDesc_IT : shortDesc_EN}}
     .products
       .product(v-for="product in products")
-        .desc-img(v-bind:style="{ backgroundImage: `url(${product.img})` }")
-        .description
-          h3.title {{getLang == 'it' ? product.title_IT : product.title_EN}}
-          .shortDesc {{getLang == 'it' ? product.shortDesc_IT : product.shortDesc_EN}}
-        .additional
-          h3.title {{getLang == 'it' ? product.title_IT : product.title_EN}}
-          .description(v-html="getLang == 'it' ? product.description_IT : product.description_EN")
+        .container
+          .desc-img(v-bind:style="{ backgroundImage: `url(${product.img})` }")
+          .description
+            h3.title {{getLang == 'it' ? product.title_IT : product.title_EN}}
+            .shortDesc {{getLang == 'it' ? product.shortDesc_IT : product.shortDesc_EN}}
+          .additional
+            h3.title {{getLang == 'it' ? product.title_IT : product.title_EN}}
+            .description(v-html="getLang == 'it' ? product.description_IT : product.description_EN")
+        .call-to-action(v-if="product.LinkToProduct")
+          a(v-bind:href="product.LinkToProduct" target="_blank") 
+            p {{getLang == 'it' ? getTerms.Terms.ShopLabel_IT : getTerms.Terms.ShopLabel_EN}}
       .product.empty
       .product.empty
 </template>
@@ -32,7 +36,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getCategoriesLoaded", "getCategories", "getLang"]),
+    ...mapGetters(["getCategoriesLoaded", "getCategories", "getLang", "getTerms"]),
   },
   watch: {
     getLang(val) {
@@ -64,6 +68,7 @@ export default {
                 img: product.Image.url,
                 shortDesc_EN: product.ShortDescription_EN,
                 shortDesc_IT: product.ShortDescription_EN,
+                LinkToProduct: product.LinkToProduct,
                 description_EN: product.Description_EN.replace(
                   /\r?\n/g,
                   "<br />"
@@ -108,12 +113,59 @@ export default {
   padding: 2em 1em;
   .product {
     flex: 0 1 49%;
-    position: relative;
-    overflow: hidden;
     margin-bottom: 1em;
-    padding-bottom: 1em;
     @media all and (min-width: 800px) {
       flex: 0 1 30%;
+    }
+    .container {
+      position: relative;
+      overflow: hidden;
+      .desc-img {
+        height: 0;
+        margin: 2em 1em;
+        padding-bottom: 100%;
+        background-position: center;
+        background-repeat: none;
+        background-size: contain;
+      }
+      .description {
+        margin-top: 2em;
+        .title {
+          margin-bottom: 0.5em;
+          color: $coffee-brown;
+        }
+        .shortDesc {
+          overflow-wrap: break-word;
+        }
+      }
+      .additional {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        bottom: -100%;
+        background-color: $coffee-brown;
+        color: white;
+        padding: 0 1em 1em;
+        font-size: 0.9em;
+        .description {
+          text-align: left;
+          &::v-deep p {
+            margin: 0.5em 0;
+          }
+        }
+      }
+    }
+    .call-to-action {
+      padding: 0 1em;
+      a {
+        text-decoration: none;
+        font-weight: bold;
+        p {
+          font-size: 1.2em;
+          padding: 0.5em 0;
+        }
+      }
     }
     &:hover {
       box-shadow: 0 0 29px 0 rgba(0, 0, 0, 0.18);
@@ -125,41 +177,6 @@ export default {
     }
     &.empty {
       pointer-events: none;
-    }
-    .desc-img {
-      height: 0;
-      margin: 2em 1em;
-      padding-bottom: 100%;
-      background-position: center;
-      background-repeat: none;
-      background-size: contain;
-    }
-    .description {
-      margin-top: 2em;
-      .title {
-        margin-bottom: 0.5em;
-        color: $coffee-brown;
-      }
-      .shortDesc {
-        overflow-wrap: break-word;
-      }
-    }
-    .additional {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      bottom: -100%;
-      background-color: $coffee-brown;
-      color: white;
-      padding: 0 1em 1em;
-      font-size: 0.9em;
-      .description {
-        text-align: left;
-        &::v-deep p {
-          margin: 0.5em 0;
-        }
-      }
     }
   }
 }

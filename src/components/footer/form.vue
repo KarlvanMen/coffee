@@ -1,21 +1,33 @@
 <template lang="pug">
     .form.shifted-border
-        .title
-            h2 {{getLang == "it" ? title_IT : title_EN}}
-        form(@submit.prevent="onsubmit" :class="{disabled: sending}")
-            .left
-                .half.floating-label
-                    input(type="text" id="name_input" placeholder=" " v-model="form.name")
-                    label.title(for="name_input") {{getLang == "it" ? name_IT : name_EN}}
-                .half.floating-label
-                    input(type="email" id="email_input" placeholder=" " v-model="form.email")
-                    label.title(for="email_input") {{getLang == "it" ? email_IT : email_EN}}
-                .full.floating-label
-                    textarea(id="message_input" max-length="800" placeholder=" " v-on:keyup="changeHeight($event)" v-model="form.message")
-                    label.title(for="message_input") {{getLang == "it" ? message_IT : message_EN}}
-            .right
-                .full
-                    button.submit.title.shifted-border(type="submit") {{getLang == "it" ? send_IT : send_EN}}
+      .title
+        h2 {{getLang == "it" ? title_IT : title_EN}}
+      form(@submit.prevent="onsubmit" :class="{disabled: sending}")
+        .half
+          label.title(for="name_input") {{getLang == "it" ? name_IT[0] : name_EN[0]}}
+            span.red *
+            |:
+          input(type="text" id="name_input" placeholder=" " v-model="form.name[0]")
+        .half
+          label.title(for="name_input") {{getLang == "it" ? name_IT[1] : name_EN[1]}}
+            span.red *
+            |:
+          input(type="text" id="name_input" placeholder=" " v-model="form.name[1]")
+        .full
+          label.title(for="email_input") {{getLang == "it" ? email_IT : email_EN}}
+            span.red *
+            |:
+          input(type="email" id="email_input" placeholder=" " v-model="form.email")
+        .full
+          label.title(for="message_input") {{getLang == "it" ? message_IT[0] : message_EN[0]}}
+            span.red *
+            |:
+          textarea(id="message_input" max-length="800" placeholder=" " v-on:keyup="changeHeight($event)" v-model="form.message[0]")
+        .full
+          label.title(for="message_input") {{getLang == "it" ? message_IT[1] : message_EN[1]}}:
+          textarea(id="message_input" max-length="800" placeholder=" " v-on:keyup="changeHeight($event)" v-model="form.message[1]")
+        .full
+          button.submit.title.shifted-border(type="submit") {{getLang == "it" ? send_IT : send_EN}}
 </template>
 
 <script>
@@ -38,9 +50,9 @@ export default {
       message_IT: "",
       send_IT: "",
       form: {
-        name: "",
+        name: [],
         email: "",
-        message: "",
+        message: [],
         sendTo: "",
       },
       sending: false,
@@ -66,10 +78,10 @@ export default {
         to: this.form.sendTo,
         subject: "Client form request",
         html: `<p><b>From:</b> ${DOMPurify.sanitize(
-          this.form.name
+          this.form.name[0] + " " + this.form.name[1]
         )} ${DOMPurify.sanitize(
           this.form.email
-        )}</p><p><b>Message:</b> ${DOMPurify.sanitize(this.form.message)}</p>`,
+        )}</p><p><b>Message:</b> ${DOMPurify.sanitize(this.form.message[0] + "<br><hr><br>" + this.form.message[1])}</p>`,
         text: "There's a new form message from website.",
       });
       self.form = {
@@ -85,14 +97,14 @@ export default {
         let text = this.getForm;
         if (text) {
           this.title_EN = text.Title_EN;
-          this.name_EN = text.Name_EN + ":";
-          this.email_EN = text.Email_EN + ":";
-          this.message_EN = text.Message_EN + ":";
+          this.name_EN = text.Name_EN.split(" | ");
+          this.email_EN = text.Email_EN;
+          this.message_EN = text.Message_EN.split(" | ");
           this.send_EN = text.Send_EN;
           this.title_IT = text.Title_IT;
-          this.name_IT = text.Name_IT + ":";
-          this.email_IT = text.Email_IT + ":";
-          this.message_IT = text.Message_IT + ":";
+          this.name_IT = text.Name_IT.split(" | ");
+          this.email_IT = text.Email_IT;
+          this.message_IT = text.Message_IT.split(" | ");
           this.send_IT = text.Send_IT;
           this.form.sendTo = text.SendTo;
         }
@@ -129,14 +141,22 @@ export default {
     textarea {
       width: 100%;
       outline: none;
-      border: none;
+      border: 1px solid black;
       font-size: 1em;
-      border-bottom: 1px solid black;
+      padding: 0.2em 0.4em;
       &:focus {
         border-color: $coffee-brown;
         & + label {
           color: $coffee-brown;
         }
+      }
+    }
+    label {
+      color: #000;
+      font-weight: bold;
+      cursor: text;
+      .red {
+        color: red;
       }
     }
     .half,
@@ -175,7 +195,6 @@ export default {
       margin-bottom: 1em;
       margin-top: 1em;
       label {
-        color: #000;
         position: absolute;
         top: -1em;
         left: 5px;
@@ -199,6 +218,8 @@ export default {
       margin-bottom: 1em;
       padding: 1em 4em;
       color: $coffee-brown;
+      font-weight: bold;
+      font-size: 1.2em;
       transition: all 0.3s;
       &:hover {
         background-color: $coffee-brown;

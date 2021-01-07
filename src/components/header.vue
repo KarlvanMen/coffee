@@ -57,7 +57,7 @@ export default {
 .container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 5px 0;
   max-width: $max-content-width-larger;
   margin: 0 auto;
@@ -66,6 +66,7 @@ export default {
     background-repeat: no-repeat;
     width: 150px;
     height: 150px;
+    max-width: 75%;
   }
   .empty,
   .lang {

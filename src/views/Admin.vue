@@ -24,6 +24,7 @@ export default {
   mounted() {
     this.checkLogIn();
     this.getGeneral();
+    this.getTerms();
     this.getProducts();
     this.getCategories();
   },
@@ -40,7 +41,7 @@ export default {
     ...mapGetters(["isJwtSet", "getBaseUrl", "getLoaded"]),
   },
   methods: {
-    ...mapMutations(["setProducts", "setLoading", "setCategories", "setData"]),
+    ...mapMutations(["setProducts", "setLoading", "setCategories", "setData", "setTerms"]),
     checkLogIn() {
       if (!this.isJwtSet) this.$router.push({ name: "Login" });
     },
@@ -50,6 +51,15 @@ export default {
         const resp = response.data;
         if (resp != null) {
           this.setData(resp);
+        }
+      });
+    },
+    getTerms() {
+      this.setLoading("terms");
+      axios.get(`${this.getBaseUrl}/terms`).then((response) => {
+        const resp = response.data;
+        if (resp != null) {
+          this.setTerms(resp);
         }
       });
     },

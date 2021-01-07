@@ -8,6 +8,7 @@ const store = new Vuex.Store({
     jwt: "",
     baseUrl: "https://kmcoffee.herokuapp.com",
     general: {},
+    terms: {},
     products: null,
     categories: null,
     loaded: {
@@ -15,12 +16,14 @@ const store = new Vuex.Store({
       categories: false,
       jwt: false,
       products: false,
+      terms: false,
     },
     loading: {
       general: false,
       categories: false,
       jwt: false,
       products: false,
+      terms: false,
     },
     lang: "",
   },
@@ -35,6 +38,11 @@ const store = new Vuex.Store({
       state.general = data;
       state.loading["general"] = false;
       state.loaded.general = true;
+    },
+    setTerms(state, data) {
+      state.terms = data;
+      state.loading["terms"] = false;
+      state.loaded.terms = true;
     },
     setCategories(state, data) {
       state.categories = data;
@@ -78,8 +86,14 @@ const store = new Vuex.Store({
     getData: (state) => {
       return state.general;
     },
+    getTerms: (state) => {
+      return state.terms;
+    },
     getDataLoaded: (state) => {
       return state.loaded.general;
+    },
+    getTermsLoaded: (state) => {
+      return state.loaded.terms;
     },
     getHeader: (state) => {
       return state.general.Navigation ? state.general.Navigation : false;

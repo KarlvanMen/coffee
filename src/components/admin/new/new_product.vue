@@ -29,6 +29,9 @@
                     h4.lang#Description_IT Description (IT)
                     textarea.long#longdescIt(v-model="new_product.Description_IT" v-bind:maxlength="bigMaxLength" :class="{error: error.Description_IT}")
                     label.floating(for="longdescIt") {{new_product.Description_IT.length}}/{{bigMaxLength}}
+                .child
+                    h4.lang#LinkToProduct URL
+                    input(v-model="new_product.LinkToProduct")
             .section.child-2
                 .child.half
                     h4.title#Image Image
@@ -72,6 +75,7 @@ export default {
         ShortDescription_IT: "",
         Title_EN: "",
         Title_IT: "",
+        LinkToProduct: "",
         categories: [],
       },
       post_product: {},
@@ -90,6 +94,7 @@ export default {
         Title_EN: false,
         Title_IT: false,
         categories: false,
+        LinkToProduct: false
       },
       firstError: null,
     };
@@ -273,6 +278,13 @@ export default {
       }
       if (this.new_product.Description_IT.length == 0) {
         if (valid) this.firstError = this.$el.querySelector("#Description_IT");
+        valid = false;
+        this.error.Description_IT = true;
+      } else {
+        this.error.Description_IT = false;
+      }
+      if (this.new_product.LinkToProduct.length == 0) {
+        if (valid) this.firstError = this.$el.querySelector("#LinkToProduct");
         valid = false;
         this.error.Description_IT = true;
       } else {

@@ -4,16 +4,27 @@
     h2 Edit 
       u Terms
     .edit
-      .header.section(v-if="page.Navigation")
+      .header.section(v-if="page.Navigation != null")
         h2.title.full Languages:
         .languages.half
-          .language(v-for="lang, i in page.Navigation.Languages.lang")
+          p.language(v-for="lang, i in page.Navigation.Languages.lang")
             label(for=`#lang-${i}`) {{lang.lang}}:  
             input(:id="`lang-${i}`" type="text" v-model="lang.title")
+      .content.section(v-if="terms.Terms != null")
+        h2.title.full Products:
+        .product-button.full.section
+          .label.full Link to product
+          p
+          .half
+            label(for="product-button-it") IT: 
+            input#product-button-it(type="text" v-model="terms.Terms.ShopLabel_IT" maxlength="30")
+          .half
+            label(for="product-button-en") EN: 
+            input#product-button-en(type="text" v-model="terms.Terms.ShopLabel_EN" maxlength="30")
       .content.section(v-if="page.ContactUs != null")
-        h2.title.full Labels
+        h2.title.full Labels:
         .name.full.section
-          .label.full Name
+          .label.full Name | Lastname (separator is necessary)
           p
           .half
             label(for="contact-name-it") IT: 
@@ -31,7 +42,7 @@
             label(for="contact-name-en") EN: 
             input#contact-email-en(type="text" v-model="page.ContactUs.Email_EN" @keyup="updateEmail($event, 'en')" maxlength="30")
         .message.full.section
-          .label.full Message
+          .label.full Message | Additional information (separator is necessary)
           p
           .half
             label(for="contact-message-it") IT: 
@@ -68,6 +79,8 @@ export default {
     return {
       origin: {},
       page: {},
+      terms: {},
+      termsOrigin: {},
     };
   },
   components: { edit_head },
@@ -76,7 +89,7 @@ export default {
   },
   computed: {},
   methods: {
-    ...mapGetters(["getData", "getDataLoaded", "getBaseUrl", "getJwt"]),
+    ...mapGetters(["getData", "getTerms", "getDataLoaded", "getTermsLoaded", "getBaseUrl", "getJwt"]),
     ...mapMutations(["setNotLoaded"]),
     setData() {
       if (!this.getDataLoaded) {
@@ -91,11 +104,29 @@ export default {
           setTimeout(() => {
             this.setData();
           }, 100);
+        } else {
+          this.setTerms()
         }
       }
     },
+    setTerms(){
+      if (!this.getTermsLoaded) {
+        setTimeout(() => {
+          this.setTerms();
+        }, 100);
+      } else {
+        const data = this.getTerms();
+        this.termsOrigin = data;
+        this.terms = JSON.parse(JSON.stringify(data));
+        if (this.terms == {}) {
+          setTimeout(() => {
+            this.setTerms();
+          }, 100);
+        } 
+      }
+    },
     updateMainPage() {
-      const changes = this.checkForChanges();
+      const changes = this.checkForChanges(this.origin, this.page);
       const baseURL = this.getBaseUrl();
       if (changes !== {}) {
         axios
@@ -104,14 +135,28 @@ export default {
           })
           .then(() => {
             this.setNotLoaded("general");
+          });
+      }
+      this.updateTerms();
+    },
+    updateTerms(){
+      const changes = this.checkForChanges(this.termsOrigin, this.terms);
+      const baseURL = this.getBaseUrl();
+      if (changes !== {}) {
+        axios
+          .put(`${baseURL}/terms`, changes, {
+            headers: { Authorization: `Bearer ${this.getJwt()}` },
+          })
+          .then(() => {
+            this.setNotLoaded("terms");
             this.$router.push({ name: "Admin" });
           });
       }
     },
-    checkForChanges() {
+    checkForChanges(orig, update) {
       let changes = {};
-      if (!this.deepEqual(this.origin, this.page)) {
-        changes = this.page;
+      if (!this.deepEqual(orig, update)) {
+        changes = update;
       }
       return changes;
     },

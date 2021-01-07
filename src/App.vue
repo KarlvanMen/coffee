@@ -28,22 +28,32 @@ export default {
     this.checkLang();
   },
   computed: {
-    ...mapGetters(["getBaseUrl", "getLang"]),
+    ...mapGetters(["getBaseUrl", "getLang", "getCSS"]),
   },
   updated() {
     this.checkPath();
   },
   methods: {
-    ...mapMutations(["setData", "setCategories", "setLang"]),
+    ...mapMutations(["setData","setTerms", "setCategories", "setLang"]),
     getData() {
       this.getHomeData();
+      this.getTerms();
       this.getCategories();
+    },
+    getTerms(){
+      axios.get(`${this.getBaseUrl}/terms`).then((response) => {
+        const resp = response.data;
+        if (resp != null) {
+          this.setTerms(resp);
+        }
+      });
     },
     getHomeData() {
       axios.get(`${this.getBaseUrl}/home`).then((response) => {
         const resp = response.data;
         if (resp != null) {
           this.setData(resp);
+          this.applyCSS();
         }
       });
     },
@@ -73,6 +83,21 @@ export default {
         }
       }
     },
+    applyCSS(){ 
+      const head = document.head;
+      let customCSS = document.createElement("style");
+
+      customCSS.type = "text/css";
+      customCSS.innerText = this.getCSS.css;
+
+      head.appendChild(customCSS);
+      this.triggerResize()
+    },
+    triggerResize(){
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 300);
+    }
   },
 };
 </script>
@@ -92,7 +117,7 @@ a {
   color: inherit;
 }
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

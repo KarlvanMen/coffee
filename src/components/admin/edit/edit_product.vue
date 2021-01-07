@@ -29,6 +29,9 @@
                     h4.lang Description (IT)
                     textarea.long#longdescIt(v-model="new_product.Description_IT" v-bind:maxlength="bigMaxLength")
                     label.floating(for="longdescIt") {{new_product.Description_IT.length}}/{{bigMaxLength}}
+                .child
+                    h4.lang#LinkToProduct URL
+                    input(v-model="new_product.LinkToProduct")
             .section.child-2
                 .child.half
                     h4.title Image
@@ -74,6 +77,7 @@ export default {
         ShortDescription_IT: "",
         Title_EN: "",
         Title_IT: "",
+        LinkToProduct: "",
         categories: [],
       },
       uploadImg: false,
@@ -114,6 +118,7 @@ export default {
           this.new_product.ShortDescription_IT = this.product.ShortDescription_IT;
           this.new_product.Title_EN = this.product.Title_EN;
           this.new_product.Title_IT = this.product.Title_IT;
+          this.new_product.LinkToProduct = this.product.LinkToProduct;
           for (let i = 0; i < this.product.categories.length; i++) {
             const category = this.product.categories[i];
             const catID = category.id;
@@ -203,6 +208,8 @@ export default {
       changes.categories = this.new_product.categories;
       if (this.product.Image !== this.new_product.Image)
         changes.Image = this.new_product.Image;
+      if (this.product.LinkToProduct !== this.new_product.LinkToProduct)
+        changes.LinkToProduct = this.new_product.LinkToProduct;
       return changes;
     },
     clickOnImgInput() {
