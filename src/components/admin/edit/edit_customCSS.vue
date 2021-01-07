@@ -3,6 +3,8 @@
     edit_head(@save="update()")
     h2 Edit 
       u Custom Style
+    p
+      i Add #app at the beginning to override default styles
     .edit
       .section
         .label Styling
@@ -60,7 +62,21 @@ export default {
           if (data.result.errorcount == 0) {
             self.updateCSS();
           } else {
-            self.showError(data.errors);
+            let realError = false;
+            let errors = data.errors;
+            for (let i = 0; i < errors.length; i++) {
+              const error = errors[i];
+              if (error.type == "generator.unrecognize") {
+                errors.splice(i, 1);
+              } else {
+                realError = true;
+              }
+            }
+            if (realError) {
+              self.showError(errors);
+            } else {
+              self.updateCSS();
+            }
           }
         });
     },

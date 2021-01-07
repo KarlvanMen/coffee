@@ -3,7 +3,7 @@
       .empty
       router-link.logo(to="/" v-bind:style="{ backgroundImage: `url(${logo})` }")
       .lang
-        .language(v-for="language in lang" :class="{white: $route.path == '/'}" @click="changeLang(language.lang)") {{language.title}}
+        .language(v-for="language in lang" :class="{white: $route.path == '/', active: getLang == language.lang}" @click="changeLang(language.lang)") {{language.title}}
 </template>
 
 <script>
@@ -17,7 +17,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getNavigation", "getDataLoaded", "getCSS"]),
+    ...mapGetters(["getNavigation", "getDataLoaded", "getCSS", "getLang"]),
   },
   methods: {
     ...mapMutations(["setLang"]),
@@ -40,14 +40,25 @@ export default {
       this.setLang(lang);
     },
     loadStyle() {
-      let element = document.createElement("style");
-      element.innerHTML = this.getCSS.css;
-      document.getElementsByTagName("head")[0].appendChild(element);
+      if (!this.getDataLoaded) {
+        setTimeout(() => {
+          this.getHeader();
+        }, 100);
+      } else {
+        let element = document.createElement("style");
+        element.innerHTML = this.getCSS.css;
+        document.getElementsByTagName("head")[0].appendChild(element);
+      }
     },
   },
   mounted() {
     this.loadStyle();
     this.getHeader();
+  },
+  updated: function() {
+    this.$nextTick(function() {
+      this.loadStyle();
+    });
   },
 };
 </script>
@@ -85,6 +96,10 @@ export default {
       }
       &:hover {
         color: $coffee-brown-light;
+      }
+      &.active {
+        font-weight: bold;
+        border-bottom: 2px solid;
       }
     }
   }

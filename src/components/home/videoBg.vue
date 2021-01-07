@@ -1,5 +1,6 @@
 <template lang="pug">
-    .background(v-bind:style="{backgroundColor: `${getBackground.Color}`}")
+    .background.vld-parent(v-bind:style="{backgroundColor: `${getBackground.Color}`}")
+        loading( :active.sync="isLoading" :is-full-page="fullPage" loader="dots")
         video(v-if="media=='video' && src.length" :autoplay="true" loop muted)
             source(:src="src")
         .static(v-else-if="media=='pic'" v-bind:style="{backgroundImage: `url(${src})`}")
@@ -8,6 +9,9 @@
 
 <script>
 import { mapGetters } from "vuex";
+import Loading from "vue-loading-overlay";
+// Import stylesheet
+import "vue-loading-overlay/dist/vue-loading.css";
 
 export default {
   name: "VideoBg",
@@ -15,12 +19,18 @@ export default {
     return {
       media: "video",
       src: "",
+      isLoading: false,
+      fullPage: true,
     };
+  },
+  components: {
+    Loading,
   },
   computed: {
     ...mapGetters(["getBackground", "getDataLoaded"]),
   },
   mounted() {
+    this.isLoading = true;
     let self = this;
     this.$nextTick(() => {
       if (this == undefined) {
@@ -74,11 +84,13 @@ export default {
                   break;
               }
               this.src = background.BackgroundMedia.url;
+              this.isLoading = false;
               break;
             default:
               //Color
               this.media = "color";
               this.src = background.Color;
+              this.isLoading = false;
               break;
           }
         }

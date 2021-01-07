@@ -65,7 +65,7 @@ export default {
               this.products.push({
                 title_EN: product.Title_EN,
                 title_IT: product.Title_EN,
-                img: product.Image.url,
+                img: product.Image ? product.Image.url : "",
                 shortDesc_EN: product.ShortDescription_EN,
                 shortDesc_IT: product.ShortDescription_EN,
                 LinkToProduct: product.LinkToProduct,
@@ -177,6 +177,41 @@ export default {
     }
     &.empty {
       pointer-events: none;
+    }
+    .desc-img {
+      height: 0;
+      margin: 2em 1em;
+      padding-bottom: 100%;
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+    .description {
+      margin-top: 2em;
+      .title {
+        margin-bottom: 0.5em;
+        color: $coffee-brown;
+      }
+      .shortDesc {
+        overflow-wrap: break-word;
+      }
+    }
+    .additional {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      bottom: -100%;
+      background-color: $coffee-brown;
+      color: white;
+      padding: 0 1em 1em;
+      font-size: 0.9em;
+      .description {
+        text-align: left;
+        &::v-deep p {
+          margin: 0.5em 0;
+        }
+      }
     }
   }
 }
